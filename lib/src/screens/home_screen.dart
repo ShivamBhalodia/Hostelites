@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Column(
                       children: [
                         Container(
-                          height: 310.0,
+                          height: 470.0,
                           child: GoogleMap(
                             mapType: MapType.normal,
                             myLocationEnabled: true,
@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.only(left: 8.0, top: 15),
+                  padding: const EdgeInsets.only(left: 8.0, top: 8),
                   child: Text(
                     'Find Nearest Restaurant',
                     style:
@@ -293,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.only(top: 15),
+                          padding: EdgeInsets.only(top: 8, right: 25),
                           child: InkWell(
                               onTap: submit,
                               child: Container(
@@ -352,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // }),
                 Container(
                   height: 170.0,
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 7),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
@@ -366,6 +366,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         user_total_rating: applicationBloc.items[index]
                                 ["user_ratings_total"]
                             .toString(),
+                        source: applicationBloc.selectedLocationStatic.placeId
+                            .toString(),
+                        // source: 'fo',
+                        destination: applicationBloc.items[index]["place_id"],
                       );
                     },
                     itemCount: applicationBloc.items.length,

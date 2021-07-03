@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:map/direction.dart';
+import 'package:map/directionScreen.dart';
+import './direction.dart';
 
 class HorizontalList extends StatelessWidget {
   String image_location;
@@ -6,13 +9,16 @@ class HorizontalList extends StatelessWidget {
   String image_vicinity;
   String user_total_rating;
   String rating;
-
+  String source;
+  String destination;
   HorizontalList({
     this.image_location,
     this.image_caption,
     this.image_vicinity,
     this.rating,
     this.user_total_rating,
+    this.source,
+    this.destination,
   });
   @override
   Widget build(BuildContext context) {
@@ -82,14 +88,58 @@ class HorizontalList extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
-                        // margin: EdgeInsets.all(20),
-                        padding: EdgeInsets.only(left: 60),
-                        child: FlatButton(
-                          child: Text('Direction'),
-                          color: Colors.blueAccent,
-                          textColor: Colors.white,
-                          onPressed: () {},
+                      Padding(
+                        padding: EdgeInsets.only(left: 60, bottom: 5),
+                        child: InkWell(
+                          onTap: () {
+                            // print('HIIIIII');
+                            // print(source);
+                            Navigator.of(context).pushNamed(
+                                DirectionScreen.routeName,
+                                arguments: {
+                                  "source": source,
+                                  "destination": destination
+                                });
+                          },
+                          child: Container(
+                            // margin: EdgeInsets.all(2
+                            // 0),
+                            height: 40,
+                            width: 130,
+
+                            decoration: new BoxDecoration(
+                                color: Colors.blueAccent,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    blurRadius: 5.0,
+                                  ),
+                                ]),
+                            padding: EdgeInsets.symmetric(horizontal: 11),
+                            child: Row(children: <Widget>[
+                              Text(
+                                'Directions',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Icon(
+                                Icons.directions,
+                                color: Colors.white,
+                                size: 25.0,
+                              ),
+                            ]),
+                            // child: FlatButton(
+                            //   child: Text('Direction'),
+                            //   color: Colors.blueAccent,
+                            //   textColor: Colors.white,
+                            //   onPressed: () {},
+                            // ),
+                          ),
                         ),
                       ),
                     ],

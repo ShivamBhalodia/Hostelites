@@ -52,9 +52,12 @@ class ApplicationBloc with ChangeNotifier {
   Future<Place> getPlace(String placeId) async {
     var url =
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$key';
+
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResult = json['result'] as Map<String, dynamic>;
+    print('SHivam');
+    print(json);
     return Place.fromJson(jsonResult);
   }
 

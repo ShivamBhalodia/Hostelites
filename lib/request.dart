@@ -17,7 +17,7 @@ class GoogleMapsServices {
   static Future<void> getRouteCoordinates(
       String start, String destination) async {
     String url =
-        "https://maps.googleapis.com/maps/api/directions/json?origin=$start&destination=$destination&key=$apiKey";
+        "https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$start&destination=place_id:$destination&key=$apiKey";
     http.Response response = await http.get(Uri.parse(url));
 
     Map values = jsonDecode(response.body);

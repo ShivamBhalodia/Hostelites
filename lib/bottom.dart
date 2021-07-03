@@ -10,10 +10,7 @@ class Bottom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: MyStatefulWidget(),
-    );
+    return MyStatefulWidget();
   }
 }
 
@@ -37,7 +34,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   void initState() {
     homeScreen = HomeScreen();
-    directionScreen = Direction();
+    directionScreen = Direction(source: '', destination: '');
 
     pages = [homeScreen, directionScreen];
 

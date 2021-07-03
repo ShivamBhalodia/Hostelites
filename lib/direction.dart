@@ -1,9 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map/steps.dart';
 import './request.dart';
+import '../blocs/application_bloc.dart';
+import 'package:provider/provider.dart';
 
 class Direction extends StatefulWidget {
+  var source;
+  var destination;
+  Direction({this.source, this.destination});
   @override
   _DirectionState createState() => _DirectionState();
 }
@@ -17,6 +24,36 @@ class _DirectionState extends State<Direction> {
   void dispose() {
     _googleMapController.dispose();
     super.dispose();
+  }
+
+  StreamSubscription locationSubscription;
+  @override
+  void initState() {
+    super.initState();
+
+    // var detail =
+    //     ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    if (widget.source != '' && widget.destination != '') {
+      _startAddress = widget.source;
+      _destinationAddress = widget.destination;
+      _goToPlace();
+    }
+
+    print(widget.source + widget.destination);
+    // (_startAddress != '' &&
+    //         _destinationAddress != '')
+    //     ? ()  {
+    //          _goToPlace();
+    //       }:null;
+    // if (place != null) {
+    //   startAddressController.text = place.name;
+    //   _startAddress = place.name;
+    //    _goToPlace();
+    // } else {
+    //   // print("init ni andar");
+    //   startAddressController.text = "";
+    //   _startAddress = "";
+    // }
   }
 
   static const _initialCameraPosition = CameraPosition(
@@ -79,6 +116,64 @@ class _DirectionState extends State<Direction> {
           contentPadding: EdgeInsets.all(15),
           hintText: hint,
         ),
+      ),
+    );
+  }
+
+  Future<void> _goToPlace() async {
+    startAddressFocusNode.unfocus();
+    desrinationAddressFocusNode.unfocus();
+    await GoogleMapsServices.getRouteCoordinates(
+        _startAddress, _destinationAddress);
+    _markers.clear();
+    setState(() {
+      _polyLines.add(Polyline(
+          polylineId: PolylineId('1'),
+          width: 2,
+          points: _convertToLatLng(_decodePoly(GoogleMapsServices.route)),
+          color: Colors.black));
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('origin'),
+          infoWindow: InfoWindow(
+              title: 'Origin (Direction Step 1)',
+              snippet: GoogleMapsServices.steps[0]["html_instructions"]),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          position: LatLng(GoogleMapsServices.source_location["lat"],
+              GoogleMapsServices.source_location["lng"]),
+        ),
+      );
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('destination'),
+          infoWindow: const InfoWindow(title: 'Destination'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          position: LatLng(GoogleMapsServices.destination_location["lat"],
+              GoogleMapsServices.destination_location["lng"]),
+        ),
+      );
+      for (var i = 1; i < GoogleMapsServices.steps.length; i++) {
+        _markers.add(Marker(
+          markerId: MarkerId(i.toString()),
+          infoWindow: InfoWindow(
+              title: 'Direction Step ${i + 1}     ',
+              snippet: '${GoogleMapsServices.steps[i]["html_instructions"]}  '),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          position: LatLng(GoogleMapsServices.steps[i]["start_location"]["lat"],
+              GoogleMapsServices.steps[i]["start_location"]["lng"]),
+        ));
+      }
+      show = true;
+    });
+    _googleMapController.animateCamera(
+      CameraUpdate.newLatLngBounds(
+        LatLngBounds(
+          northeast: LatLng(GoogleMapsServices.bounds["northeast"]["lat"],
+              GoogleMapsServices.bounds["northeast"]["lng"]),
+          southwest: LatLng(GoogleMapsServices.bounds["southwest"]["lat"],
+              GoogleMapsServices.bounds["southwest"]["lng"]),
+        ),
+        100.0,
       ),
     );
   }
@@ -220,92 +315,7 @@ class _DirectionState extends State<Direction> {
                             onPressed: (_startAddress != '' &&
                                     _destinationAddress != '')
                                 ? () async {
-                                    startAddressFocusNode.unfocus();
-                                    desrinationAddressFocusNode.unfocus();
-                                    await GoogleMapsServices
-                                        .getRouteCoordinates(
-                                            _startAddress, _destinationAddress);
-                                    setState(() {
-                                      _polyLines.add(Polyline(
-                                          polylineId: PolylineId('1'),
-                                          width: 2,
-                                          points: _convertToLatLng(_decodePoly(
-                                              GoogleMapsServices.route)),
-                                          color: Colors.black));
-                                      _markers.add(
-                                        Marker(
-                                          markerId: const MarkerId('origin'),
-                                          infoWindow: InfoWindow(
-                                              title:
-                                                  'Origin (Direction Step 1)',
-                                              snippet:
-                                                  GoogleMapsServices.steps[0]
-                                                      ["html_instructions"]),
-                                          icon: BitmapDescriptor
-                                              .defaultMarkerWithHue(
-                                                  BitmapDescriptor.hueRed),
-                                          position: LatLng(
-                                              GoogleMapsServices
-                                                  .source_location["lat"],
-                                              GoogleMapsServices
-                                                  .source_location["lng"]),
-                                        ),
-                                      );
-                                      _markers.add(
-                                        Marker(
-                                          markerId:
-                                              const MarkerId('destination'),
-                                          infoWindow: const InfoWindow(
-                                              title: 'Destination'),
-                                          icon: BitmapDescriptor
-                                              .defaultMarkerWithHue(
-                                                  BitmapDescriptor.hueRed),
-                                          position: LatLng(
-                                              GoogleMapsServices
-                                                  .destination_location["lat"],
-                                              GoogleMapsServices
-                                                  .destination_location["lng"]),
-                                        ),
-                                      );
-                                      for (var i = 1;
-                                          i < GoogleMapsServices.steps.length;
-                                          i++) {
-                                        _markers.add(Marker(
-                                          markerId: MarkerId(i.toString()),
-                                          infoWindow: InfoWindow(
-                                              title:
-                                                  'Direction Step ${i + 1}     ',
-                                              snippet:
-                                                  '${GoogleMapsServices.steps[i]["html_instructions"]}  '),
-                                          icon: BitmapDescriptor
-                                              .defaultMarkerWithHue(
-                                                  BitmapDescriptor.hueBlue),
-                                          position: LatLng(
-                                              GoogleMapsServices.steps[i]
-                                                  ["start_location"]["lat"],
-                                              GoogleMapsServices.steps[i]
-                                                  ["start_location"]["lng"]),
-                                        ));
-                                      }
-                                      show = true;
-                                    });
-                                    _googleMapController.animateCamera(
-                                      CameraUpdate.newLatLngBounds(
-                                        LatLngBounds(
-                                          northeast: LatLng(
-                                              GoogleMapsServices
-                                                  .bounds["northeast"]["lat"],
-                                              GoogleMapsServices
-                                                  .bounds["northeast"]["lng"]),
-                                          southwest: LatLng(
-                                              GoogleMapsServices
-                                                  .bounds["southwest"]["lat"],
-                                              GoogleMapsServices
-                                                  .bounds["southwest"]["lng"]),
-                                        ),
-                                        100.0,
-                                      ),
-                                    );
+                                    await _goToPlace();
                                   }
                                 : null,
                             child: Padding(
