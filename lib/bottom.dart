@@ -34,7 +34,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   void initState() {
     homeScreen = HomeScreen();
-    directionScreen = Direction(source: '', destination: '');
+    directionScreen = Direction(
+      source: '',
+      destination: '',
+      sourceName: '',
+      destinationName: '',
+    );
 
     pages = [homeScreen, directionScreen];
 

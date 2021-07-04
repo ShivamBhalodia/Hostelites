@@ -114,12 +114,21 @@ class ApplicationBloc with ChangeNotifier {
 
   setCurrentLocation() async {
     currentLocation = await geoLocatorService.getCurrentLocation();
+    var url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentLocation.latitude},${currentLocation.longitude}&key=$key';
+    var response = await http.get(Uri.parse(url));
+    var json = convert.jsonDecode(response.body);
+    print(json);
+    var jsonResults = json['results'] as List;
+    var currentId = jsonResults[0]["place_id"];
+    var currentName = jsonResults[0]["formatted_address"];
     selectedLocationStatic = Place(
-      name: null,
+      name: currentName,
       geometry: Geometry(
         location: Location(
             lat: currentLocation.latitude, lng: currentLocation.longitude),
       ),
+      placeId: currentId,
     );
     notifyListeners();
   }

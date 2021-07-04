@@ -11,6 +11,8 @@ class HorizontalList extends StatelessWidget {
   String rating;
   String source;
   String destination;
+  String sourceName;
+
   HorizontalList({
     this.image_location,
     this.image_caption,
@@ -19,6 +21,7 @@ class HorizontalList extends StatelessWidget {
     this.user_total_rating,
     this.source,
     this.destination,
+    this.sourceName,
   });
   @override
   Widget build(BuildContext context) {
@@ -94,11 +97,14 @@ class HorizontalList extends StatelessWidget {
                           onTap: () {
                             // print('HIIIIII');
                             // print(source);
+                            // print(sourceName);
                             Navigator.of(context).pushNamed(
                                 DirectionScreen.routeName,
                                 arguments: {
                                   "source": source,
-                                  "destination": destination
+                                  "destination": destination,
+                                  "sourceName": sourceName,
+                                  "destinationName": image_caption,
                                 });
                           },
                           child: Container(

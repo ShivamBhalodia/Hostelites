@@ -10,7 +10,10 @@ import 'package:provider/provider.dart';
 class Direction extends StatefulWidget {
   var source;
   var destination;
-  Direction({this.source, this.destination});
+  var sourceName;
+  var destinationName;
+  Direction(
+      {this.source, this.destination, this.sourceName, this.destinationName});
   @override
   _DirectionState createState() => _DirectionState();
 }
@@ -36,6 +39,10 @@ class _DirectionState extends State<Direction> {
     if (widget.source != '' && widget.destination != '') {
       _startAddress = widget.source;
       _destinationAddress = widget.destination;
+      startAddressController.text = widget.sourceName;
+      destinationAddressController.text = widget.destinationName;
+      print('Name Check');
+      print(widget.sourceName);
       _goToPlace();
     }
 

@@ -12,6 +12,8 @@ class DirectionScreen extends StatelessWidget {
     return Direction(
       source: detail["source"],
       destination: detail["destination"],
+      sourceName: detail["sourceName"],
+      destinationName: detail["destinationName"],
     );
   }
 }

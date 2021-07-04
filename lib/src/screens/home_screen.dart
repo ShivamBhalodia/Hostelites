@@ -370,6 +370,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             .toString(),
                         // source: 'fo',
                         destination: applicationBloc.items[index]["place_id"],
+                        sourceName: applicationBloc.selectedLocationStatic.name
+                            .toString(),
                       );
                     },
                     itemCount: applicationBloc.items.length,
