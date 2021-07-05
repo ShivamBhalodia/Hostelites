@@ -86,45 +86,92 @@ class _DirectionState extends State<Direction> {
     @required double width,
     @required Icon prefixIcon,
     Widget suffixIcon,
-    @required Function(String) locationCallback,
+    @required Function(String, String) locationCallback,
   }) {
-    return Container(
-      width: width * 0.8,
-      child: TextField(
-        onChanged: (value) {
-          locationCallback(value);
-        },
-        controller: controller,
-        focusNode: focusNode,
-        decoration: new InputDecoration(
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-          labelText: label,
-          filled: true,
-          fillColor: Colors.white,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
+
+    print('applicationBloc.searchResults');
+    if (applicationBloc.searchResults != null)
+      print(applicationBloc.searchResults[0].description);
+    return Column(children: [
+      Container(
+        width: width * 0.8,
+        child: TextField(
+          onChanged: (value) {
+            applicationBloc.searchPlaces(value);
+          },
+          onTap: () => applicationBloc.clearSelectedLocation(),
+          controller: controller,
+          focusNode: focusNode,
+          decoration: new InputDecoration(
+            prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
+            labelText: label,
+            filled: true,
+            fillColor: Colors.white,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10.0),
+              ),
+              borderSide: BorderSide(
+                color: Colors.grey.shade400,
+                width: 2,
+              ),
             ),
-            borderSide: BorderSide(
-              color: Colors.grey.shade400,
-              width: 2,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10.0),
+              ),
+              borderSide: BorderSide(
+                color: Colors.blue.shade300,
+                width: 2,
+              ),
             ),
+            contentPadding: EdgeInsets.all(15),
+            hintText: hint,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
-            ),
-            borderSide: BorderSide(
-              color: Colors.blue.shade300,
-              width: 2,
-            ),
-          ),
-          contentPadding: EdgeInsets.all(15),
-          hintText: hint,
         ),
       ),
-    );
+      if (applicationBloc.searchResults != null &&
+          applicationBloc.searchResults.length != 0 &&
+          focusNode.hasFocus)
+        // print(applicationBloc.searchResults.length),
+        Container(
+          height: 300.0,
+          width: double.infinity,
+          decoration: BoxDecoration(
+              color: Colors.black.withOpacity(.6),
+              backgroundBlendMode: BlendMode.darken),
+          child: ListView.builder(
+              itemCount: applicationBloc.searchResults.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    applicationBloc.searchResults[index].description,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {
+                    // print("ontap");
+                    // print(applicationBloc.searchResults[index].placeId);
+                    // applicationBloc.setSelectedLocation(
+                    //     applicationBloc
+                    //         .searchResults[index].placeId);
+                    locationCallback(
+                        applicationBloc.searchResults[index].placeId,
+                        applicationBloc.searchResults[index].description);
+
+                    // startAddressController.text = widget.sourceName;
+                    // destinationAddressController.text = widget.destinationName;
+                  },
+                );
+              }),
+        ),
+      // if (applicationBloc.searchResults != null)
+      //   Container(
+      //     height: 300.0,
+      //     child:
+      //   ),
+    ]);
   }
 
   Future<void> _goToPlace() async {
@@ -277,9 +324,10 @@ class _DirectionState extends State<Direction> {
                               controller: startAddressController,
                               focusNode: startAddressFocusNode,
                               width: width,
-                              locationCallback: (String value) {
+                              locationCallback: (String value, String name) {
                                 setState(() {
                                   _startAddress = value;
+                                  startAddressController.text = name;
                                 });
                               }),
                           SizedBox(height: 10),
@@ -290,9 +338,10 @@ class _DirectionState extends State<Direction> {
                               controller: destinationAddressController,
                               focusNode: desrinationAddressFocusNode,
                               width: width,
-                              locationCallback: (String value) {
+                              locationCallback: (String value, String name) {
                                 setState(() {
                                   _destinationAddress = value;
+                                  destinationAddressController.text = name;
                                 });
                               }),
                           SizedBox(height: 10),
