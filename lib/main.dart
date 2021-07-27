@@ -31,49 +31,10 @@ class MyApp extends StatelessWidget {
         return OrientationBuilder(
           builder: (context, orientation) {
             SizeConfig().init(constraints, orientation);
-            return MultiProvider(
-                providers: [
-                  ChangeNotifierProvider.value(
-                    value: P_Shopkeeper(),
-                  ),
-                  ChangeNotifierProvider.value(
-                    value: P_Consumer(),
-                  ),
-                  ChangeNotifierProvider.value(
-                    value: P_Restuarant(),
-                  ),
-                  ChangeNotifierProvider.value(
-                    value: P_Favs(),
-                  ),
-                ],
-                child: MaterialApp(
-                  title: 'Hostel App',
-                  theme: ThemeData(
-                    primarySwatch: Colors.green,
-                    // canvasColor: Colors.transparent
-                  ),
-                  debugShowCheckedModeBanner: false,
-                  //home: Intro1(),
-                  home: MealDetailScreen(),
-                  routes: {
-                    InitializerWidget.routename: (ctx) => InitializerWidget(),
-                    AuthScreen.routename: (ctx) => AuthScreen(),
-                    HomePage.routename: (ctx) => HomePage(),
-                    ProdtoItem.routename: (ctx) => ProdtoItem(),
-                    AppDrawer.routename: (ctx) => AppDrawer(),
-                  },
-                ));
+            return Text('Initial Setup');
           },
         );
       },
     );
-    // return MaterialApp(
-    //   title: 'Flutter Demo',
-    //   debugShowCheckedModeBanner: false,
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.blue,
-    //   ),
-    //   home: TestGoogleMap(),
-    // );
   }
 }
