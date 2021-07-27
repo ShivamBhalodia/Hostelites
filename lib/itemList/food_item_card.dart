@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
-
+import 'package:hostel_app/providers/p_resturanat.dart';
+import 'package:hostel_app/utils/size_config.dart';
 import 'package:provider/provider.dart';
 
 class FoodItemCard extends StatelessWidget {
@@ -80,6 +81,47 @@ class FoodItemCard extends StatelessWidget {
                         ]),
                   ),
                 )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                InkWell(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 0.77827191867 * SizeConfig.heightMultiplier,
+                          horizontal:
+                              1.21527777778 * SizeConfig.widthMultiplier),
+                      child: Row(children: <Widget>[
+                        Icon(
+                          Icons.shopping_cart,
+                          color: Colors.red,
+                          size: 2.77954256671 * SizeConfig.heightMultiplier,
+                        ),
+                        Text(
+                          'Add to Cart',
+                          style: TextStyle(
+                            fontSize:
+                                1.77890724269 * SizeConfig.heightMultiplier,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ]),
+                    ),
+                    onTap: () {}),
+                InkWell(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 0.77827191867 * SizeConfig.heightMultiplier,
+                          horizontal:
+                              1.21527777778 * SizeConfig.widthMultiplier),
+                      child: Icon(
+                        Icons.favorite_border_outlined,
+                        color: Colors.red,
+                        size: 3.00190597205 * SizeConfig.heightMultiplier,
+                      ),
+                    ),
+                    onTap: () {})
               ],
             ),
           ],
