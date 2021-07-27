@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hostel_app/utils/size_config.dart';
 
 class MealDetailScreen extends StatefulWidget {
   MealDetailScreen();
@@ -36,6 +37,22 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       ),
       body: Column(
         children: <Widget>[
+          Card(
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Image.asset("assets/images/lunch.jpeg",
+                fit: BoxFit.cover,
+                width: 89.9305555556 * SizeConfig.widthMultiplier,
+                height: 31.9989834816 * SizeConfig.heightMultiplier),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                  4.44726810673 * SizeConfig.heightMultiplier),
+            ),
+            elevation: 6,
+            margin: EdgeInsets.symmetric(
+                horizontal: 4.86111111111 * SizeConfig.widthMultiplier,
+                vertical: 1.66772554003 * SizeConfig.heightMultiplier),
+          ),
           Container(
             padding: EdgeInsets.symmetric(
                 horizontal: 4.86111111111 * SizeConfig.widthMultiplier),
@@ -102,6 +119,61 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                   child: SingleChildScrollView(
                       child: Text(
                           'What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry Lorem Ipsum has been the industry standard dummy text ever since the 1500s when an unknown printer took a galley of type and scrambled it to make a type specimen book it has? What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry Lorem Ipsum has been the industry standard dummy text ever since the 1500s when an unknown printer took a galley of type and scrambled it to make a type specimen book it has?')))),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: 4.86111111111 * SizeConfig.widthMultiplier,
+                vertical: 1.11181702668 * SizeConfig.heightMultiplier),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.remove),
+                      color: Colors.red,
+                      iconSize: 2.22363405337 * SizeConfig.heightMultiplier,
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Container(
+                        width: 12.1527777778 * SizeConfig.widthMultiplier,
+                        height: 3.33545108005 * SizeConfig.heightMultiplier,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          border: Border.all(color: Colors.white, width: 0.0),
+                          borderRadius: BorderRadius.circular(
+                              1.11181702668 * SizeConfig.heightMultiplier),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '1',
+                            style: TextStyle(
+                                fontSize:
+                                    2.00127064803 * SizeConfig.heightMultiplier,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.add),
+                      color: Colors.red,
+                      iconSize: 2.22363405337 * SizeConfig.heightMultiplier,
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.bookmark_add_outlined),
+                  color: Color(0xFFfd2c2c),
+                  iconSize: 3.33545108005 * SizeConfig.heightMultiplier,
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
