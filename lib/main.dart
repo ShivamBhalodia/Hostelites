@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'cart/cart.dart';
+import 'itemDetails/details.dart';
+import 'editProfile/editProfile.dart';
+import './itemList/itemList.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,16 +11,12 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return OrientationBuilder(
-          builder: (context, orientation) {
-            return Text('Initial Setup');
-          },
-        );
-      },
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: ProfileScreen(),
     );
   }
 }
