@@ -3,6 +3,7 @@ import 'cart/cart.dart';
 import 'itemDetails/details.dart';
 import 'editProfile/editProfile.dart';
 import './itemList/itemList.dart';
+import './aboutUs.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ProfileScreen(),
+      home: AboutUs(),
     );
   }
 }
