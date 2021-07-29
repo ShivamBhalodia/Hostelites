@@ -25,6 +25,20 @@ class AppDrawer extends StatelessWidget {
           InkWell(
             onTap: () {},
             child: ListTile(
+              title: Text('Login'),
+              leading: Icon(Icons.login),
+            ),
+          ),
+          InkWell(
+            onTap: () {},
+            child: ListTile(
+              title: Text('Logout'),
+              leading: Icon(Icons.logout),
+            ),
+          ),
+          InkWell(
+            onTap: () {},
+            child: ListTile(
               title: Text('Home Page'),
               leading: Icon(Icons.home),
             ),
@@ -46,17 +60,33 @@ class AppDrawer extends StatelessWidget {
           InkWell(
             onTap: () {},
             child: ListTile(
-              title: Text('Categoris'),
-              leading: Icon(Icons.dashboard),
+              title: Text('Favourites'),
+              leading: Icon(Icons.favorite),
+            ),
+          ),
+          Divider(),
+          InkWell(
+            onTap: () {},
+            child: ListTile(
+              title: Text('About Us'),
+              leading: Icon(Icons.info),
             ),
           ),
           InkWell(
             onTap: () {},
             child: ListTile(
-              title: Text('Favourites'),
-              leading: Icon(Icons.favorite),
+              title: Text('Share'),
+              leading: Icon(Icons.share),
             ),
           ),
+          InkWell(
+            onTap: () {},
+            child: ListTile(
+              title: Text('Rate Us'),
+              leading: Icon(Icons.rate_review),
+            ),
+          ),
+          
           Divider(),
         ],
       ),

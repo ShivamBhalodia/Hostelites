@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:hostel_app/drawer.dart';
+import 'package:hostel_app/horizontal_list.dart';
 import 'package:hostel_app/images/add_products.dart';
 import 'package:hostel_app/order_screen.dart';
 import 'package:hostel_app/products.dart';
+import 'package:flutter_search_bar/flutter_search_bar.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -18,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AddProductScreen(),
+      home: MyHomePage(),
     );
   }
 }
@@ -37,6 +41,45 @@ class _MyHomePageState extends State<MyHomePage> {
     'lib/images/FSSAI-Drafts-Regulations-on-Safe-and-Wholesome-Food-for-School-Children.jpg',
     'lib/images/H220546cb02cc4c4da8e6dc437d0986d9f.jpg',
   ];
+  SearchBar? searchBar = null;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  AppBar buildAppBar(BuildContext context) {
+    return new AppBar(
+      title: new Text('Hostel-App'),
+      actions: <Widget>[
+        searchBar!.getSearchAction(context),
+        IconButton(
+          icon: Icon(
+            Icons.notifications,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            // do something
+          },
+        )
+      ],
+    );
+  }
+
+  void onSubmitted(String value) {
+    setState(() => _scaffoldKey.currentState!
+        .showSnackBar(new SnackBar(content: new Text('You wrote $value!'))));
+  }
+
+  _MyHomePageState() {
+    searchBar = new SearchBar(
+        inBar: false,
+        buildDefaultAppBar: buildAppBar,
+        setState: setState,
+        onSubmitted: onSubmitted,
+        onCleared: () {
+          print("cleared");
+        },
+        onClosed: () {
+          print("closed");
+        });
+  }
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
@@ -91,33 +134,33 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }).toList(),
       ),
-      // Carousel(
-      //   boxFit: BoxFit.cover,
-      //   images: [
-      //     AssetImage('lib/images/907106.jpg'),
-      //     AssetImage('lib/images/bootstrap-carousel-slide-4.jpg'),
-      //     AssetImage('lib/images/food2.jpg'),
-      //     AssetImage('lib/images/FSSAI-Drafts-Regulations-on-Safe-and-Wholesome-Food-for-School-Children.jpg'),
-      //     AssetImage('lib/images/H220546cb02cc4c4da8e6dc437d0986d9f.jpg'),
-      //   ],
-      //   autoplay: false,
-      //   dotSize: 4.0,
-      //   indicatorBgPadding: 4.0,
-      //   dotColor: Colors.white,
-      // ),
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Hostel'),
-        backgroundColor: Colors.orange,
-      ),
+      appBar: searchBar!.build(context),
+      key: _scaffoldKey,
+      drawer: AppDrawer(),
       body: Column(
         children: <Widget>[
           image_carousel,
           Padding(
+            padding: const EdgeInsets.only(
+              left: 20.0,
+              bottom: 10,
+            ),
+            child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Categories',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            ),
+          ),
+          HorizontalList(),
+          Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Products',
+              style: TextStyle(fontSize: 16.0),
             ),
           ),
           Flexible(child: Products()),
