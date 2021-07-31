@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import './food_item_card.dart';
 
-class FavoritePage extends StatefulWidget {
-  FavoritePage();
+class ItemList extends StatefulWidget {
+  ItemList();
   @override
-  _FavoritePageState createState() => _FavoritePageState();
+  _ItemListState createState() => _ItemListState();
 }
 
-class _FavoritePageState extends State<FavoritePage> {
+class _ItemListState extends State<ItemList> {
   // the scaffold global key
   GlobalKey<ScaffoldState> _explorePageScaffoldKey = GlobalKey();
 
