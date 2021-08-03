@@ -25,4 +25,11 @@ urlpatterns = [
     #2nd
     path('validateotp',views.ValidateOTP),
     path('login',views.Login),
+    ##to get restaurant by cousines
+    path('get_restaurants/<slug:pk>/',views.get_restaurants),
+    ## to get restaurant by name
+    path('get_restaurant_byname/<slug:name>/',views.get_restaurants),
+    ##to get all restaurants
+    path('get_restaurants',views.get_restaurants),
+    path('update_profile',views.update_profile),
 ]

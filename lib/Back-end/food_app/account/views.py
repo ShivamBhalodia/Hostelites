@@ -6,12 +6,14 @@ from account.serializers import RegisterSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes,authentication_classes
 import io
 from django.contrib.auth import login
-from account.models import User,PhoneOTP
-from account.serializers import CreateUserSerializer,LoginUserSerializer
+from account.models import User,PhoneOTP,Shopkeeper,Customer
+from account.serializers import CreateUserSerializer,LoginUserSerializer,ShopkeeperSerializer,CustomerSerializer
 from django.core.mail import send_mail
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 ##from blissedmaths.utils import phone_validator, password_generator, otp_generator
 import math,random
 # Create your views here.
@@ -73,7 +75,6 @@ def sendotp_email(email):
         return False
 
 
-
 @api_view(["POST"])
 @csrf_exempt
 def ValidatePhoneSendOTP(request):
@@ -86,7 +87,7 @@ def ValidatePhoneSendOTP(request):
     print(phone_number)
     val=1
     if phone_number:
-        username=phone
+        username=phone_number
         val=0
     else:
         username=request.data.get('email')
@@ -194,12 +195,14 @@ def Register(request):
     '''Takes phone and a password and creates a new user only if otp was verified and phone is new'''
 
     
-    serializer=RegisterSerializer(data=request.data)
-    if serializer.is_valid:
+    serializer1=RegisterSerializer(data=request.data)
+    if serializer1.is_valid():
             phone=request.data.get('phone',False)
+            val=0
             if phone:
                 username=phone
             else:
+                val=1
                 username=request.data.get('email',False)
             password=request.data.get('password',False)
            
@@ -223,6 +226,22 @@ def Register(request):
                                 serializer.is_valid(raise_exception=True)
                                 user = serializer.save()
                                 user.save()
+                                ###Create Customer or Shopkeeper
+                                if val==0:
+                                    log_value='phone'
+                                else:
+                                    log_value='email'
+                                name=request.data.get('Name',None)
+                                email=request.data.get('email',None)
+                                phone=request.data.get('phone',None)
+                                ##print(request.data.get('shopkeeper'))
+                                serializer1.is_valid()
+                                if serializer1.validated_data['shopkeeper']:
+                                    print(type(serializer1.validated_data['shopkeeper']))
+                                    Shopkeeper.objects.create(user1=user,loggedin_with=log_value,Owner_name=name,email=email,phone=phone)
+                                else:
+                                    ## Create Customer
+                                    Customer.objects.create(user1=user,loggedin_with=log_value,Name=name,email=email,phone=phone)
 
                                 old.delete()
                                 return Response({
@@ -251,20 +270,22 @@ def Register(request):
                         'status' : 'False',
                         'detail' : 'Either phone/e-mail or password was not recieved in Post request'
                     })
-        
+    else:
+        return Response(serializer1.errors)
 
 
 @api_view(["POST"])
 # @permission_classes([permissions.AllowAny,])
 @csrf_exempt
 def Login(request):
-        
+        print(request.user)
         serializer = LoginUserSerializer(data=request.data)
         if serializer.is_valid():
         
             user = serializer.validated_data['user']
                 
             login(request, user)
+            print(request.user)
             return Response({
                     'status' : 'True',
                                 'detail' : 'user logged in successfully'
@@ -276,3 +297,49 @@ def Login(request):
                                 'detail' : 'Incorrect credentials'
 
                 })
+@api_view(["POST","PUT"])
+# @permission_classes([permissions.AllowAny,])
+@csrf_exempt
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+
+    if request.method=='PUT':
+        username=request.user.username
+        
+        obj=Customer.objects.filter(user1__username=username)
+        print(username)
+        print(obj)
+        if len(obj)==1:
+            obj1=Customer.objects.get(user1__username=username)
+            serializer=CustomerSerializer(obj1,data=request.data,partial=True,context={'request': request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"Profile updated successfuly"})
+        
+            return Response(serializer.errors)
+        else:
+            obj1=Shopkeeper.objects.get(user1__username=username)
+            serializer=ShopkeeperSerializer(obj1,data=request.data,partial=True,context={'request': request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"Profile updated successfuly"})
+        
+           
+        
+        return Response(serializer.errors)
+
+
+@api_view(['GET'])
+def get_restaurants(request,pk=False,name=False):
+    print(pk)
+    if not pk:
+        if name:
+            restaurants=Shopkeeper.objects.filter(Restaurant_name=name)
+        else:   
+            restaurants=Shopkeeper.objects.all()
+        
+    else:
+        restaurants=Shopkeeper.objects.filter(Category=pk)
+    serializer=ShopkeeperSerializer(restaurants,many=True)
+    return Response(serializer.data)
