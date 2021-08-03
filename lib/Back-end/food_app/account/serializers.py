@@ -6,6 +6,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django import forms
 from django.contrib.auth import authenticate
+from .models import Customer,Shopkeeper
 
 class RegisterSerializer(serializers.Serializer):
 
@@ -74,3 +75,54 @@ class LoginUserSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+        
+        class Meta:
+            model=Customer
+            fields=['Name','email','phone','address','loggedin_with']
+      
+        def validate(self,data):
+            
+            username=self.context['request'].user
+            obj=Customer.objects.get(user1__username=username)
+            obj=CustomerSerializer(obj)
+           
+            log_value=obj['loggedin_with'].value
+           
+            val=data.get(log_value)
+           
+            
+            if val:
+                print(val,obj[log_value].value)
+                
+                if val!=obj[log_value].value:
+                    raise serializers.ValidationError({"Can't update the value which was used for logging in!!"})
+        
+            return data
+
+class ShopkeeperSerializer(serializers.ModelSerializer):
+
+        loggedin_with=serializers.CharField(required=False)
+        class Meta:
+            model=Shopkeeper
+            fields=['Restaurant_name','Owner_name','email','phone','address','loggedin_with','Category']
+        
+        def validate(self,data):
+            username=self.context['request'].user
+           
+            obj=Shopkeeper.objects.get(user1__username=username)
+            obj=ShopkeeperSerializer(obj)
+          
+            log_value=obj['loggedin_with'].value
+           
+            val=data.get(log_value)
+            
+            if val:
+                print(val,obj[log_value].value)
+                
+                if val!=obj[log_value].value:
+                    raise serializers.ValidationError({"Can't update the value which was used for logging in!!"})
+        
+            return data
