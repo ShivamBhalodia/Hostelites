@@ -6,7 +6,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django import forms
 from django.contrib.auth import authenticate
-from .models import Customer,Shopkeeper
+from .models import Customer,Shopkeeper,Items
 
 class RegisterSerializer(serializers.Serializer):
 
@@ -107,7 +107,7 @@ class ShopkeeperSerializer(serializers.ModelSerializer):
         loggedin_with=serializers.CharField(required=False)
         class Meta:
             model=Shopkeeper
-            fields=['Restaurant_name','Owner_name','email','phone','address','loggedin_with','Category']
+            fields=['id','Restaurant_name','Owner_name','email','phone','address','loggedin_with','Category']
         
         def validate(self,data):
             username=self.context['request'].user
@@ -126,3 +126,17 @@ class ShopkeeperSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError({"Can't update the value which was used for logging in!!"})
         
             return data
+
+
+class ItemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Items
+        fields=['Name','Description','Price','Category','id']
+    
+    def validate(self,data):
+        username=self.context['request'].user
+        li=Shopkeeper.objects.filter(user1__username=username)
+        if len(li)==0:
+            return Serializers.ValidationError({"Customer can not add items"})
+        return data

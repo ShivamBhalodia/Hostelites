@@ -25,6 +25,10 @@ class Customer(models.Model):
     phone=models.CharField(max_length=17,blank=True,null=True)
     address=models.TextField(blank=True,null=True)
 
+    def __str__(self):
+        return self.user1.username
+  
+
 class Shopkeeper(models.Model):
     user1= models.OneToOneField(User,on_delete=models.CASCADE)
     loggedin_with=models.CharField(max_length=10)
@@ -34,12 +38,25 @@ class Shopkeeper(models.Model):
     phone=models.CharField(max_length=17,blank=True,null=True)
     address=models.TextField(blank=True,null=True)
     Category=models.CharField(max_length=25,blank=True,null=True)
+    favourite_restaurants=models.ManyToManyField(Customer,blank=True)
 
 
-# class Items(models.Model):
-#     user1=models.Foreignkey(Shopkeeper,on_delete=models.CASCADE)
-#     Name=models.CharField(max_length=100)
-#     Description=models.TextField()
-#     Price=models.IntegerField()
+    def __str__(self):
+        return self.user1.username
 
+
+class Items(models.Model):
+    user1=models.OneToOneField(Shopkeeper,on_delete=models.CASCADE)
+    Name=models.CharField(max_length=100)
+    Description=models.TextField()
+    Price=models.IntegerField()
+    Category=models.CharField(max_length=25,blank=True,null=True)
+    favourite_items=models.ManyToManyField(Customer,blank=True)
+
+
+# class Cart(models.Model):
+#     user1=Models.OnetoOneField(Customer,on_delete=models.CASCASE)
+#     quantity=models.IntegerField()
+#     ite
+    
 
