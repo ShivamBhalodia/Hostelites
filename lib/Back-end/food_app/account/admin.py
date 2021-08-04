@@ -1,9 +1,10 @@
 from django.contrib import admin
-from account.models import PhoneOTP,Customer,Shopkeeper
+from account.models import PhoneOTP,Customer,Shopkeeper,Items
 
 admin.site.register(PhoneOTP)
 admin.site.register(Customer)
 admin.site.register(Shopkeeper)
+admin.site.register(Items)
 ##from account.models import User
 # Register your models here.
 

@@ -32,4 +32,19 @@ urlpatterns = [
     ##to get all restaurants
     path('get_restaurants',views.get_restaurants),
     path('update_profile',views.update_profile),
+
+
+    path('add_items',views.add_items),
+    ## gets items in a restaurant
+    path('get_items/<int:pk>/',views.get_items),
+    #restaurant/category
+    path('get_items_bycategory/<int:pk>/<slug:category>/',views.get_items),
+    ##restaurant/name
+    path('get_items_byname/<int:pk>/<slug:name>/',views.get_items),
+    ##add remove fav 
+    path('favourite_restaurant/<int:pk>',views.add_remove_favourite_restaurant),
+    path('favourite_items/<int:pk>',views.add_remove_favourite_item),
+    ##get fav
+    path('get_fav_restaurant',views.user_favourite_restaurants),
+    path('get_fav_items',views.user_favourite_items)
 ]

@@ -9,8 +9,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 import io
 from django.contrib.auth import login
-from account.models import User,PhoneOTP,Shopkeeper,Customer
-from account.serializers import CreateUserSerializer,LoginUserSerializer,ShopkeeperSerializer,CustomerSerializer
+from account.models import User,PhoneOTP,Shopkeeper,Customer,Items
+from account.serializers import CreateUserSerializer,LoginUserSerializer,ShopkeeperSerializer,CustomerSerializer,ItemSerializer
 from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -343,3 +343,95 @@ def get_restaurants(request,pk=False,name=False):
         restaurants=Shopkeeper.objects.filter(Category=pk)
     serializer=ShopkeeperSerializer(restaurants,many=True)
     return Response(serializer.data)
+
+
+@api_view(["POST","PUT"])
+# @permission_classes([permissions.AllowAny,])
+@csrf_exempt
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def add_items(request):
+ 
+    if request.method=='POST':
+        serializer=ItemSerializer(data=request.data,context={'request': request})
+        if serializer.is_valid():
+            user1=Shopkeeper.objects.get(user1=request.user)
+            Items.objects.create(user1=user1,Name=serializer.validated_data['Name'],
+                Description=serializer.validated_data['Description'],Price=serializer.validated_data['Price'])
+            return Response({"Item added successfully"})
+        return Response(serializer.errors)
+
+@api_view(['GET'])
+##get items by restautant , by category, by name
+def get_items(request,pk=False,name=False,category=False):
+    ## get items by restaurant
+        print("hi")
+        if pk and not name and not category:
+            li=Items.objects.filter(user1__id=pk)
+        if pk and name and not category:
+            restaurant=Shopkeeper.objects.get(id=pk)
+            print(restaurant)
+            li=Items.objects.filter(Name=name).filter(user1=restaurant)
+        if pk and not name and category:
+            restaurant=Shopkeeper.objects.get(id=pk)
+            print(restaurant,category)
+            li=Items.objects.filter(Category=category).filter(user1=restaurant)
+            print(li)
+        serializer=ItemSerializer(li,many=True)
+        return Response(serializer.data)
+
+
+@api_view(["POST","PUT"])
+# @permission_classes([permissions.AllowAny,])
+@csrf_exempt
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def add_remove_favourite_restaurant(request,pk):
+    restaurant=Shopkeeper.objects.get(id=pk)
+    customer=Customer.objects.get(user1=request.user)
+    if customer in restaurant.favourite_restaurants.all():
+        restaurant.favourite_restaurants.remove(customer)
+    else:
+        restaurant.favourite_restaurants.add(customer)
+    return Response({"Updated Successfully"})
+    
+    
+
+@api_view(["POST","PUT"])
+# @permission_classes([permissions.AllowAny,])
+@csrf_exempt
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def add_remove_favourite_item(request,pk):
+    item=Items.objects.get(id=pk)
+    customer=Customer.objects.get(user1=request.user)
+    print(item,customer)
+    if customer in item.favourite_items.all():
+        item.favourite_items.remove(customer)
+    else:
+        item.favourite_items.add(customer)
+    return Response({"Updated Successfully"})
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def user_favourite_restaurants(request):
+    customer=Customer.objects.get(user1=request.user)
+    user_favourites = Shopkeeper.objects.filter(favourite_restaurants=customer)
+    serializer=ShopkeeperSerializer(user_favourites,many=True)
+    return Response(serializer.data)
+
+
+    
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def user_favourite_items(request):
+    customer=Customer.objects.get(user1=request.user)
+    user_favourites=Items.objects.filter(favourite_items=customer)
+    serializer=ItemSerializer(user_favourites,many=True)
+    return Response(serializer.data)
+
+
+# def add_to_cart()
