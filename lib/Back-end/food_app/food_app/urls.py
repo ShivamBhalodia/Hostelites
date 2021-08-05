@@ -46,5 +46,11 @@ urlpatterns = [
     path('favourite_items/<int:pk>',views.add_remove_favourite_item),
     ##get fav
     path('get_fav_restaurant',views.user_favourite_restaurants),
-    path('get_fav_items',views.user_favourite_items)
+    path('get_fav_items',views.user_favourite_items),
+    path('add_to_cart/<int:pk>',views.add_to_cart),
+    path('request_order/<int:pk>',views.request_order),
+    path('shopkeeper_accept/<int:pk>',views.shopkeeper_accept),
+     path('shopkeeper_reject/<int:pk>',views.shopkeeper_reject),
+    path('shopkeeper_order_history',views.shopkeeper_order_history),
+    path('customer_order_history',views.customer_order_history)
 ]

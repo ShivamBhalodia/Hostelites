@@ -9,11 +9,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 import io
 from django.contrib.auth import login
-from account.models import User,PhoneOTP,Shopkeeper,Customer,Items
-from account.serializers import CreateUserSerializer,LoginUserSerializer,ShopkeeperSerializer,CustomerSerializer,ItemSerializer
+from account.models import User,PhoneOTP,Shopkeeper,Customer,Items,OrderItem,Order,Shopkeeper_Order_History,Customer_Order_History
+from account.serializers import CreateUserSerializer,LoginUserSerializer,ShopkeeperSerializer,CustomerSerializer,ItemSerializer,soh_serializer,coh_serializer
 from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from django.shortcuts import get_object_or_404
 ##from blissedmaths.utils import phone_validator, password_generator, otp_generator
 import math,random
 # Create your views here.
@@ -357,7 +358,7 @@ def add_items(request):
         if serializer.is_valid():
             user1=Shopkeeper.objects.get(user1=request.user)
             Items.objects.create(user1=user1,Name=serializer.validated_data['Name'],
-                Description=serializer.validated_data['Description'],Price=serializer.validated_data['Price'])
+                Description=serializer.validated_data['Description'],Price=serializer.validated_data['Price'],)
             return Response({"Item added successfully"})
         return Response(serializer.errors)
 
@@ -367,7 +368,11 @@ def get_items(request,pk=False,name=False,category=False):
     ## get items by restaurant
         print("hi")
         if pk and not name and not category:
-            li=Items.objects.filter(user1__id=pk)
+            restaurant=Shopkeeper.objects.get(id=pk)
+
+            li=Items.objects.filter(user1=restaurant)
+        
+        print(li)
         if pk and name and not category:
             restaurant=Shopkeeper.objects.get(id=pk)
             print(restaurant)
@@ -434,4 +439,102 @@ def user_favourite_items(request):
     return Response(serializer.data)
 
 
-# def add_to_cart()
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def add_to_cart(request, pk):
+    item = get_object_or_404(Items, pk=pk)
+    customer=Customer.objects.get(user1=request.user)
+    order_item, created = OrderItem.objects.get_or_create(
+        item=item,
+        user=customer
+        ##ordered=False
+    )
+    order_qs = Order.objects.filter(user=customer)
+
+    if order_qs.exists():
+        order = order_qs[0]
+
+        if order.items.filter(item__pk=item.pk).exists():
+            order_item.quantity += 1
+            order_item.save()
+            return Response({"message": "Added quantity Item", },
+                            ##status=status.HTTP_200_OK
+                            )
+        else:
+            order.items.add(order_item)
+            return Response({"message": " Item added to your cart", },
+                           ## status=status.HTTP_200_OK,
+                            )
+    else:
+        ##ordered_date = datetime.timezone.now()
+        order = Order.objects.create(user=customer)
+        order.items.add(order_item)
+        return Response({"message": "Item added to your cart", },
+                       ## status=status.HTTP_200_OK,
+                        )
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def request_order(request,pk):
+    shopkeeper=Shopkeeper.objects.get(id=pk)
+    customer=Customer.objects.get(user1=request.user)
+    order=Order.objects.get(user=customer)
+    print(shopkeeper,customer,order.user)
+    Shopkeeper_Order_History.objects.create(user=shopkeeper,order=order)
+    Customer_Order_History.objects.create(user=customer,order=order)
+    return Response({"Order requested!!"})
+
+@api_view(['POST'])
+def shopkeeper_accept(request,pk):
+    obj=Shopkeeper_Order_History.objects.get(id=pk)
+    print(obj)
+    obj.status=True
+    obj.save()
+    order=obj.order
+    obj1=Customer_Order_History.objects.get(order=order)
+    obj1.status=True
+    obj1.save()
+   
+    return Response({"Order accepted!!"})
+
+
+
+@api_view(['POST'])
+def shopkeeper_reject(request,pk):
+    obj=Shopkeeper_Order_History.objects.get(id=pk)
+    
+    order=obj.order
+    obj.delete()
+    obj1=Customer_Order_History.objects.get(order=order)
+    obj1.delete()
+    return Response({"Order cancelled!!"})
+
+
+
+@api_view(['POST'])
+def customer_reject__(request):
+    obj=Customer_Order_History.objects.get(id=pk)
+    
+    order=obj.order
+    obj.delete()
+    obj1=Shopkeeper_Order_History.objects.get(order=order)
+    obj1.delete()
+    return Response({"Order cancelled!!"})
+
+
+# @api_view(['GET'])
+# def shopkeeper_order_history(request):
+#     shopkeeper=Shopkeeper.objects.get(user1=request.user)
+#     obj=Shopkeeper_Order_History.objects.get(user=shopkeeper)
+#     serializer=soh_serializer(obj,many=True)
+#     return Response(serializer.data)
+
+# @api_view(['GET'])
+# def customer_order_history(request):
+#     customer=Customer.objects.get(user1=request.user)
+#     print(customer)
+#     obj=Customer_Order_History.objects.get(user=customer)
+#     serializer=coh_serializer(obj,many=True)
+#     return Response(serializer.data)
+
