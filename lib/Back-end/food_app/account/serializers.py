@@ -6,7 +6,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django import forms
 from django.contrib.auth import authenticate
-from .models import Customer,Shopkeeper,Items
+from .models import Customer,Shopkeeper,Items,Shopkeeper_Order_History,Customer_Order_History
 
 class RegisterSerializer(serializers.Serializer):
 
@@ -140,3 +140,16 @@ class ItemSerializer(serializers.ModelSerializer):
         if len(li)==0:
             return Serializers.ValidationError({"Customer can not add items"})
         return data
+
+
+class soh_serializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Shopkeeper_Order_History
+        fields=['id','status','user','order']
+
+
+class coh_serializer(serializers.ModelSerializer):
+    class Meta:
+        model=Customer_Order_History
+        fileds=['id','status','user','order']

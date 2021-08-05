@@ -46,7 +46,7 @@ class Shopkeeper(models.Model):
 
 
 class Items(models.Model):
-    user1=models.OneToOneField(Shopkeeper,on_delete=models.CASCADE)
+    user1=models.ForeignKey(Shopkeeper,on_delete=models.CASCADE)
     Name=models.CharField(max_length=100)
     Description=models.TextField()
     Price=models.IntegerField()
@@ -54,9 +54,39 @@ class Items(models.Model):
     favourite_items=models.ManyToManyField(Customer,blank=True)
 
 
-# class Cart(models.Model):
-#     user1=Models.OnetoOneField(Customer,on_delete=models.CASCASE)
-#     quantity=models.IntegerField()
-#     ite
+class OrderItem(models.Model) :
+    user = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True, blank=True)
+    ##ordered = models.BooleanField(default=False)
+    item = models.ForeignKey(Items, on_delete=models.CASCADE,blank=True, null=True)
+    quantity = models.IntegerField(default=1)
+
+
+    # def __str__(self):
+    #     return f"{self.quantity} of {self.item.name}"
+
+class Order(models.Model):
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE,null=True, blank=True)
+    items = models.ManyToManyField(OrderItem,blank=True, null=True)
+    # start_date = models.DateTimeField(auto_now_add=True)
+    # ordered_date = models.DateTimeField()
+    # ordered = models.BooleanField(default=False)
+
+    # def __str__(self):
+    #     return self.user.email
+
+
+class Shopkeeper_Order_History(models.Model):
+        user=models.ForeignKey(Shopkeeper,on_delete=models.CASCADE,null=True,blank=True)
+        order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True,blank=True)
+        status=models.BooleanField(default=False)
+
+class Customer_Order_History(models.Model):
+        user=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,blank=True)
+        order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True,blank=True)
+        status=models.BooleanField(default=False)
+
+
+
+
     
 
