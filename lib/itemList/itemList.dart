@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import './horizontal_list.dart';
 import './food_item_card.dart';
+import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 class ItemList extends StatefulWidget {
   ItemList();
@@ -17,31 +18,79 @@ class _ItemListState extends State<ItemList> {
     super.initState();
   }
 
+  void onSubmitted(String value) {
+    setState(() => _explorePageScaffoldKey.currentState!
+        .showSnackBar(new SnackBar(content: new Text('You wrote $value!'))));
+  }
+
+  SearchBar? searchBar = null;
+
+  AppBar buildAppBar(BuildContext context) {
+    return new AppBar(
+      title: new Text('Hostel-App'),
+      actions: <Widget>[
+        searchBar!.getSearchAction(context),
+        IconButton(
+          icon: Icon(
+            Icons.notifications,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            // do something
+          },
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.share,
+            color: Colors.white,
+          ),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+
+  _ItemListState() {
+    searchBar = new SearchBar(
+        inBar: false,
+        buildDefaultAppBar: buildAppBar,
+        setState: setState,
+        onSubmitted: onSubmitted,
+        onCleared: () {
+          print("cleared");
+        },
+        onClosed: () {
+          print("closed");
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _explorePageScaffoldKey,
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.pink,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {},
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.share,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: searchBar!.build(context),
+      // AppBar(
+      //   backgroundColor: Colors.pink,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     icon: Icon(
+      //       Icons.arrow_back,
+      //       color: Colors.white,
+      //     ),
+      //     onPressed: () {},
+      //   ),
+      //   actions: <Widget>[
+      //     // searchBar!.getSearchAction(context),
+      //     IconButton(
+      //       icon: Icon(
+      //         Icons.share,
+      //         color: Colors.white,
+      //       ),
+      //       onPressed: () {},
+      //     ),
+      //   ],
+      // ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: Column(
@@ -102,6 +151,17 @@ class _ItemListState extends State<ItemList> {
               elevation: 6,
               margin: EdgeInsets.symmetric(vertical: 15),
             ),
+            SizedBox(height: 10),
+            Center(
+                child: Text(
+              'Categories',
+              style: TextStyle(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.2),
+            )),
+            HorizontalList(),
+            SizedBox(height: 10),
             Center(
                 child: Text(
               'Menu',
