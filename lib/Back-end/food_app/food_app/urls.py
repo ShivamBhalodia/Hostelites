@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from account import views
+from rest_framework.authtoken.views import obtain_auth_token 
 urlpatterns = [
+    path('api-token-auth/', obtain_auth_token, name='api-tokn-auth'),
     path('admin/', admin.site.urls),
     #3rd
     path('register',views.Register),
@@ -51,6 +53,9 @@ urlpatterns = [
     path('request_order/<int:pk>',views.request_order),
     path('shopkeeper_accept/<int:pk>',views.shopkeeper_accept),
      path('shopkeeper_reject/<int:pk>',views.shopkeeper_reject),
+      path('customer_reject/<int:pk>',views.customer_reject),
     path('shopkeeper_order_history',views.shopkeeper_order_history),
     path('customer_order_history',views.customer_order_history)
 ]
+
+###http POST http://localhost:8000/api-token-auth/ username='969' password="abcd1234@"
