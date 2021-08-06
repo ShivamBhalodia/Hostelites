@@ -5,7 +5,9 @@ from django.views.decorators.csrf import csrf_exempt
 from account.serializers import RegisterSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 import io
 from django.contrib.auth import login
@@ -190,6 +192,8 @@ def ValidateOTP(request):
             })
 
 @api_view(["POST"])
+@authentication_classes([])
+@permission_classes([AllowAny])
 @csrf_exempt
 def Register(request):
 
@@ -276,33 +280,33 @@ def Register(request):
 
 
 @api_view(["POST"])
-# @permission_classes([permissions.AllowAny,])
+@authentication_classes([])
+@permission_classes([AllowAny])
 @csrf_exempt
 def Login(request):
-        print(request.user)
+        ###print(request.user)
         serializer = LoginUserSerializer(data=request.data)
         if serializer.is_valid():
         
             user = serializer.validated_data['user']
-                
+            
             login(request, user)
-            print(request.user)
-            return Response({
-                    'status' : 'True',
-                                'detail' : 'user logged in successfully'
+    
 
-                })
+            token = Token.objects.create(user=user)
+            return Response(token.key)    
+                
         else:
                 return Response({
                     'status' : 'False',
                                 'detail' : 'Incorrect credentials'
 
                 })
+
 @api_view(["POST","PUT"])
 # @permission_classes([permissions.AllowAny,])
 @csrf_exempt
-@authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+
 def update_profile(request):
 
     if request.method=='PUT':
@@ -349,8 +353,7 @@ def get_restaurants(request,pk=False,name=False):
 @api_view(["POST","PUT"])
 # @permission_classes([permissions.AllowAny,])
 @csrf_exempt
-@authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+
 def add_items(request):
  
     if request.method=='POST':
@@ -389,8 +392,7 @@ def get_items(request,pk=False,name=False,category=False):
 @api_view(["POST","PUT"])
 # @permission_classes([permissions.AllowAny,])
 @csrf_exempt
-@authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+
 def add_remove_favourite_restaurant(request,pk):
     restaurant=Shopkeeper.objects.get(id=pk)
     customer=Customer.objects.get(user1=request.user)
@@ -405,8 +407,7 @@ def add_remove_favourite_restaurant(request,pk):
 @api_view(["POST","PUT"])
 # @permission_classes([permissions.AllowAny,])
 @csrf_exempt
-@authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+
 def add_remove_favourite_item(request,pk):
     item=Items.objects.get(id=pk)
     customer=Customer.objects.get(user1=request.user)
@@ -419,8 +420,7 @@ def add_remove_favourite_item(request,pk):
 
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+
 def user_favourite_restaurants(request):
     customer=Customer.objects.get(user1=request.user)
     user_favourites = Shopkeeper.objects.filter(favourite_restaurants=customer)
@@ -430,8 +430,7 @@ def user_favourite_restaurants(request):
 
     
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+
 def user_favourite_items(request):
     customer=Customer.objects.get(user1=request.user)
     user_favourites=Items.objects.filter(favourite_items=customer)
@@ -440,8 +439,7 @@ def user_favourite_items(request):
 
 
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+
 def add_to_cart(request, pk):
     item = get_object_or_404(Items, pk=pk)
     customer=Customer.objects.get(user1=request.user)
@@ -474,8 +472,7 @@ def add_to_cart(request, pk):
                        ## status=status.HTTP_200_OK,
                         )
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+
 def request_order(request,pk):
     shopkeeper=Shopkeeper.objects.get(id=pk)
     customer=Customer.objects.get(user1=request.user)
@@ -513,7 +510,8 @@ def shopkeeper_reject(request,pk):
 
 
 @api_view(['POST'])
-def customer_reject__(request):
+def customer_reject(request,pk):
+    print(request)
     obj=Customer_Order_History.objects.get(id=pk)
     
     order=obj.order
@@ -523,18 +521,18 @@ def customer_reject__(request):
     return Response({"Order cancelled!!"})
 
 
-# @api_view(['GET'])
-# def shopkeeper_order_history(request):
-#     shopkeeper=Shopkeeper.objects.get(user1=request.user)
-#     obj=Shopkeeper_Order_History.objects.get(user=shopkeeper)
-#     serializer=soh_serializer(obj,many=True)
-#     return Response(serializer.data)
+@api_view(['GET'])
+def shopkeeper_order_history(request):
+    shopkeeper=Shopkeeper.objects.get(user1=request.user)
+    obj=Shopkeeper_Order_History.objects.get(user=shopkeeper)
+    serializer=soh_serializer(obj,many=True)
+    return Response(serializer.data)
 
-# @api_view(['GET'])
-# def customer_order_history(request):
-#     customer=Customer.objects.get(user1=request.user)
-#     print(customer)
-#     obj=Customer_Order_History.objects.get(user=customer)
-#     serializer=coh_serializer(obj,many=True)
-#     return Response(serializer.data)
+@api_view(['GET'])
+def customer_order_history(request):
+    customer=Customer.objects.get(user1=request.user)
+    print(customer)
+    obj=Customer_Order_History.objects.get(user=customer)
+    serializer=coh_serializer(obj,many=True)
+    return Response(serializer.data)
 
