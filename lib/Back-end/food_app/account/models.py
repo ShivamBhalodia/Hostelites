@@ -77,12 +77,16 @@ class Order(models.Model):
 
 class Shopkeeper_Order_History(models.Model):
         user=models.ForeignKey(Shopkeeper,on_delete=models.CASCADE,null=True,blank=True)
-        order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True,blank=True)
+        ##order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True,blank=True)
+        customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,blank=True)
+        items=models.ManyToManyField(OrderItem,blank=True,null=True)
         status=models.BooleanField(default=False)
 
 class Customer_Order_History(models.Model):
         user=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,blank=True)
-        order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True,blank=True)
+        ##order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True,blank=True)
+        shopkeeper=models.ForeignKey(Shopkeeper,on_delete=models.CASCADE,null=True,blank=True)
+        items=models.ManyToManyField(OrderItem,blank=True,null=True)
         status=models.BooleanField(default=False)
 
 

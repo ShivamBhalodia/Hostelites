@@ -37,6 +37,7 @@ urlpatterns = [
 
 
     path('add_items',views.add_items),
+    path('remove_item/<int:pk>',views.remove_item),
     ## gets items in a restaurant
     path('get_items/<int:pk>/',views.get_items),
     #restaurant/category
