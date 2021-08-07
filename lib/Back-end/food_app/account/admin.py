@@ -3,12 +3,17 @@ from account.models import PhoneOTP,Customer,Shopkeeper,Items,OrderItem,Order,Sh
 
 admin.site.register(PhoneOTP)
 admin.site.register(Customer)
-admin.site.register(Shopkeeper)
+##admin.site.register(Shopkeeper)
 admin.site.register(Items)
 admin.site.register(OrderItem)
 admin.site.register(Order)
 admin.site.register(Shopkeeper_Order_History)
 admin.site.register(Customer_Order_History)
+
+
+class ShopkeeperAdmin(admin.ModelAdmin):
+    list_display=['id','user1']
+admin.site.register(Shopkeeper,ShopkeeperAdmin)
 ##from account.models import User
 # Register your models here.
 

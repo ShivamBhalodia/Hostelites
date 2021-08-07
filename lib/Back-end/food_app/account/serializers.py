@@ -146,10 +146,10 @@ class soh_serializer(serializers.ModelSerializer):
 
     class Meta:
         model=Shopkeeper_Order_History
-        fields=['id','status','user','order']
+        fields=['id','status','user','items']
 
 
 class coh_serializer(serializers.ModelSerializer):
     class Meta:
         model=Customer_Order_History
-        fileds=['id','status','user','order']
+        fields=['id','status','user','items']

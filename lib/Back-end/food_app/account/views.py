@@ -21,6 +21,7 @@ from django.shortcuts import get_object_or_404
 import math,random
 # Create your views here.
 @csrf_exempt
+@authentication_classes([])
 @api_view(["POST"])
 def register(request):
 
@@ -79,6 +80,7 @@ def sendotp_email(email):
 
 
 @api_view(["POST"])
+@authentication_classes([])
 @csrf_exempt
 def ValidatePhoneSendOTP(request):
     '''
@@ -145,6 +147,7 @@ def ValidatePhoneSendOTP(request):
             })
 
 @api_view(["POST"])
+@authentication_classes([])
 @csrf_exempt
 def ValidateOTP(request):
     '''
@@ -193,7 +196,7 @@ def ValidateOTP(request):
 
 @api_view(["POST"])
 @authentication_classes([])
-@permission_classes([AllowAny])
+
 @csrf_exempt
 def Register(request):
 
@@ -243,11 +246,12 @@ def Register(request):
                                 serializer1.is_valid()
                                 if serializer1.validated_data['shopkeeper']:
                                     print(type(serializer1.validated_data['shopkeeper']))
+                                    Token.objects.create(user=user)
                                     Shopkeeper.objects.create(user1=user,loggedin_with=log_value,Owner_name=name,email=email,phone=phone)
                                 else:
                                     ## Create Customer
                                     Customer.objects.create(user1=user,loggedin_with=log_value,Name=name,email=email,phone=phone)
-
+                                    Token.objects.create(user=user)
                                 old.delete()
                                 return Response({
                                     'status' : True, 
@@ -293,7 +297,7 @@ def Login(request):
             login(request, user)
     
 
-            token = Token.objects.create(user=user)
+            token = Token.objects.get(user=user)
             return Response(token.key)    
                 
         else:
@@ -361,9 +365,15 @@ def add_items(request):
         if serializer.is_valid():
             user1=Shopkeeper.objects.get(user1=request.user)
             Items.objects.create(user1=user1,Name=serializer.validated_data['Name'],
-                Description=serializer.validated_data['Description'],Price=serializer.validated_data['Price'],)
+                Description=serializer.validated_data['Description'],Price=serializer.validated_data['Price'],Category=serializer.validated_data['Price'])
             return Response({"Item added successfully"})
         return Response(serializer.errors)
+
+@api_view(['POST'])
+
+def remove_item(request,pk):
+    obj=Items.objects.get(id=pk)
+    obj.delete()
 
 @api_view(['GET'])
 ##get items by restautant , by category, by name
@@ -460,26 +470,65 @@ def add_to_cart(request, pk):
                             ##status=status.HTTP_200_OK
                             )
         else:
+            order_item.quantity=1
+            order_item.save()
             order.items.add(order_item)
             return Response({"message": " Item added to your cart", },
                            ## status=status.HTTP_200_OK,
                             )
     else:
         ##ordered_date = datetime.timezone.now()
+        print("mk")
         order = Order.objects.create(user=customer)
+        order_item.quantity=1
+        order_item.save()
         order.items.add(order_item)
+        ##order_item.quantity=1
         return Response({"message": "Item added to your cart", },
                        ## status=status.HTTP_200_OK,
                         )
+
+
+@api_view(['POST'])
+def remove_from_cart(request,pk):
+    item = get_object_or_404(Items, pk=pk)
+    customer=Customer.objects.get(user1=request.user)
+    order_item, created = OrderItem.objects.get_or_create(
+        item=item,
+        user=customer
+        ##ordered=False
+    )
+    order_qs = Order.objects.filter(user=customer)
+
+    if order_qs.exists():
+        order = order_qs[0]
+
+        if order.items.filter(item__pk=item.pk).exists():
+            order_item.quantity -= 1
+            order_item.save()
+            if order_item.quantity==0:
+                order.items.erase(order_item)
+            return Response({"message": "Removed quantity Item", },
+                            ##status=status.HTTP_200_OK
+                            )
+        else:
+            # order.items.add(order_item)
+            return Response({"message": " Item already removed!!", },
+                           ## status=status.HTTP_200_OK,
+                            )
+
 @api_view(['POST'])
 
 def request_order(request,pk):
     shopkeeper=Shopkeeper.objects.get(id=pk)
     customer=Customer.objects.get(user1=request.user)
     order=Order.objects.get(user=customer)
-    print(shopkeeper,customer,order.user)
-    Shopkeeper_Order_History.objects.create(user=shopkeeper,order=order)
-    Customer_Order_History.objects.create(user=customer,order=order)
+    
+    instance=Shopkeeper_Order_History.objects.create(user=shopkeeper,customer=customer)
+    instance.items.set(order.items.all())
+    instance1=Customer_Order_History.objects.create(user=customer,shopkeeper=shopkeeper)
+    instance1.items.set(order.items.all())
+    order.delete()
     return Response({"Order requested!!"})
 
 @api_view(['POST'])
@@ -489,10 +538,10 @@ def shopkeeper_accept(request,pk):
     obj.status=True
     obj.save()
     order=obj.order
-    obj1=Customer_Order_History.objects.get(order=order)
+    obj1=Customer_Order_History.objects.get(id=pk)
     obj1.status=True
     obj1.save()
-   
+    
     return Response({"Order accepted!!"})
 
 
@@ -503,7 +552,7 @@ def shopkeeper_reject(request,pk):
     
     order=obj.order
     obj.delete()
-    obj1=Customer_Order_History.objects.get(order=order)
+    obj1=Customer_Order_History.objects.get(id=pk)
     obj1.delete()
     return Response({"Order cancelled!!"})
 
@@ -513,10 +562,9 @@ def shopkeeper_reject(request,pk):
 def customer_reject(request,pk):
     print(request)
     obj=Customer_Order_History.objects.get(id=pk)
-    
     order=obj.order
     obj.delete()
-    obj1=Shopkeeper_Order_History.objects.get(order=order)
+    obj1=Shopkeeper_Order_History.objects.get(id=pk)
     obj1.delete()
     return Response({"Order cancelled!!"})
 
@@ -524,7 +572,7 @@ def customer_reject(request,pk):
 @api_view(['GET'])
 def shopkeeper_order_history(request):
     shopkeeper=Shopkeeper.objects.get(user1=request.user)
-    obj=Shopkeeper_Order_History.objects.get(user=shopkeeper)
+    obj=Shopkeeper_Order_History.objects.filter(user=shopkeeper)
     serializer=soh_serializer(obj,many=True)
     return Response(serializer.data)
 
@@ -532,7 +580,8 @@ def shopkeeper_order_history(request):
 def customer_order_history(request):
     customer=Customer.objects.get(user1=request.user)
     print(customer)
-    obj=Customer_Order_History.objects.get(user=customer)
+    obj=Customer_Order_History.objects.filter(user=customer)
+    print(obj)
     serializer=coh_serializer(obj,many=True)
     return Response(serializer.data)
 
