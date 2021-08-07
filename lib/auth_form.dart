@@ -1,25 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hostel_app/homepage.dart';
+import 'package:hostel_app/providers/p_Shopkeeper.dart';
+import 'package:hostel_app/providers/p_consumer.dart';
+import 'package:hostel_app/settings.dart';
+import 'package:provider/provider.dart';
 
 class AuthForm extends StatefulWidget {
   int? flag;
   AuthForm(this.flag);
-  // AuthForm(
-  //   this.submitFn,
-  //   this.isLoading,
-  // );
-
-  // final bool isLoading;
-  // final void Function(
-  //   String email,
-  //   String password,
-  //   String username,
-  //   String confirmpassword,
-  //   String phonenumber,
-  //   bool isLogin,
-  //   BuildContext ctx,
-  // ) submitFn;
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -28,33 +18,15 @@ class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
 
   var _isLogin = false;
-  String _userEmail = '';
-  String _userName = '';
-  String _password = '';
-  String _confirmpassword = '';
-  String _userphonenumber = '';
-
-  void _trySubmit() {
-    final isValid = _formKey.currentState!.validate();
-    FocusScope.of(context).unfocus();
-
-    if (isValid) {
-      // _formKey.currentState!.save();
-      // widget.submitFn(
-      //   _userEmail.trim(),
-      //   _password.trim(),
-      //   _userName.trim(),
-      //   _confirmpassword.trim(),
-      //   _userphonenumber.trim(),
-      //   _isLogin,
-      //   context,
-      // );
-      // SnackBar(
-      //   content: Text('Successfully Saved'),
-      //   backgroundColor: Theme.of(context).bottomAppBarColor,
-      // );
-    }
-  }
+  String email = '';
+  String name = '';
+  String password = '';
+  String confirmpassword = '';
+  String phone = '';
+  String c_email = '';
+  String c_password = '';
+  String c_confirmpassword = '';
+  String c_phone = '';
 
   bool _obpassword = true;
   bool _obpassword1 = true;
@@ -74,6 +46,52 @@ class _AuthFormState extends State<AuthForm> {
 
   @override
   Widget build(BuildContext context) {
+    void _trySubmit() async {
+      final isValid = _formKey.currentState!.validate();
+      FocusScope.of(context).unfocus();
+      print(phone);
+      print(confirmpassword);
+      print("jainam checking");
+      if (isValid) {
+        bool isValid = _formKey.currentState!.validate();
+        _formKey.currentState!.save();
+        if (isValid) {
+          await Provider.of<P_Shopkeeper>(context, listen: false)
+              .registerShopkeeper(
+            phone,
+            password,
+            confirmpassword,
+            name,
+            true,
+          );
+        }
+        Navigator.of(context).pushNamed(HomePage.routename);
+      }
+    }
+
+    void _submit() async {
+      final isValid = _formKey.currentState!.validate();
+      FocusScope.of(context).unfocus();
+      print(c_phone);
+      print(c_confirmpassword);
+      print("jainam checking");
+      if (isValid) {
+        bool isValid = _formKey.currentState!.validate();
+        _formKey.currentState!.save();
+        if (isValid) {
+          await Provider.of<P_Consumer>(context, listen: false)
+              .registerConsumer(
+            c_phone,
+            c_password,
+            c_confirmpassword,
+            name,
+            false,
+          );
+        }
+        Navigator.of(context).pushNamed(HomePage.routename);
+      }
+    }
+
     return Scaffold(
         resizeToAvoidBottomInset: !_isLogin ? true : false,
         appBar: AppBar(
@@ -155,7 +173,7 @@ class _AuthFormState extends State<AuthForm> {
                                             labelText: 'Name',
                                           ),
                                           onSaved: (value) {
-                                            _userName = value!;
+                                            name = value!;
                                           },
                                         ),
                                       TextFormField(
@@ -176,7 +194,7 @@ class _AuthFormState extends State<AuthForm> {
                                           labelText: 'E-mail ID',
                                         ),
                                         onSaved: (value) {
-                                          _userEmail = value!;
+                                          email = value!;
                                         },
                                       ),
                                       if (!_isLogin)
@@ -197,7 +215,7 @@ class _AuthFormState extends State<AuthForm> {
                                             labelText: 'Mobile Number',
                                           ),
                                           onSaved: (value) {
-                                            _userphonenumber = value!;
+                                            phone = value!;
                                           },
                                         ),
                                       TextFormField(
@@ -227,7 +245,7 @@ class _AuthFormState extends State<AuthForm> {
                                         ),
                                         obscureText: _obpassword,
                                         onSaved: (value) {
-                                          _password = value!;
+                                          password = value!;
                                         },
                                       ),
                                       if (!_isLogin)
@@ -250,7 +268,7 @@ class _AuthFormState extends State<AuthForm> {
                                           ),
                                           obscureText: _obpassword1,
                                           onSaved: (value) {
-                                            _confirmpassword = value!;
+                                            confirmpassword = value!;
                                           },
                                           validator: (value) {
                                             if (value!.isEmpty ||
@@ -458,7 +476,7 @@ class _AuthFormState extends State<AuthForm> {
                                                 labelText: 'Name',
                                               ),
                                               onSaved: (value) {
-                                                _userName = value!;
+                                                name = value!;
                                               },
                                             )
                                           : Container(),
@@ -481,7 +499,7 @@ class _AuthFormState extends State<AuthForm> {
                                               : 'Shop Name',
                                         ),
                                         onSaved: (value) {
-                                          _userName = value!;
+                                          name = value!;
                                         },
                                       ),
                                     if (!_isLogin)
@@ -502,7 +520,7 @@ class _AuthFormState extends State<AuthForm> {
                                                 labelText: 'Address',
                                               ),
                                               onSaved: (value) {
-                                                _userName = value!;
+                                                name = value!;
                                               },
                                             )
                                           : Container(),
@@ -525,7 +543,7 @@ class _AuthFormState extends State<AuthForm> {
                                               labelText: 'E-mail ID',
                                             ),
                                             onSaved: (value) {
-                                              _userEmail = value!;
+                                              c_email = value!;
                                             },
                                           )
                                         : Container(),
@@ -547,7 +565,7 @@ class _AuthFormState extends State<AuthForm> {
                                           labelText: 'Mobile Number',
                                         ),
                                         onSaved: (value) {
-                                          _userphonenumber = value!;
+                                          c_phone = value!;
                                         },
                                       ),
                                     TextFormField(
@@ -577,7 +595,7 @@ class _AuthFormState extends State<AuthForm> {
                                       ),
                                       obscureText: _obpassword,
                                       onSaved: (value) {
-                                        _password = value!;
+                                        c_password = value!;
                                       },
                                     ),
                                     if (!_isLogin)
@@ -600,7 +618,7 @@ class _AuthFormState extends State<AuthForm> {
                                         ),
                                         obscureText: _obpassword1,
                                         onSaved: (value) {
-                                          _confirmpassword = value!;
+                                          c_confirmpassword = value!;
                                         },
                                         validator: (value) {
                                           if (value!.isEmpty ||
@@ -645,7 +663,8 @@ class _AuthFormState extends State<AuthForm> {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  onPressed: _trySubmit,
+                                  onPressed:
+                                      widget.flag == 1 ? _trySubmit : _submit,
                                 ),
                               ),
                               //if (!widget.isLoading && !_isLogin)
