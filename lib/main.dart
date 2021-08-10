@@ -1,29 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hostel_app/FavItem.dart';
 import 'package:hostel_app/email_auth.dart';
 import 'package:hostel_app/homepage.dart';
 import 'package:hostel_app/initial_file.dart';
-import 'package:hostel_app/login_screen.dart';
-import 'package:hostel_app/mainpage.dart';
+
 import 'package:hostel_app/prodTOitem.dart';
 import 'package:hostel_app/providers/p_Shopkeeper.dart';
 import 'package:hostel_app/providers/p_consumer.dart';
+import 'package:hostel_app/providers/p_favs.dart';
 import 'package:hostel_app/providers/p_resturanat.dart';
 import 'package:provider/provider.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:hostel_app/drawer.dart';
-import 'package:hostel_app/google_map.dart';
-import 'package:hostel_app/horizontal_list.dart';
-import 'package:hostel_app/images/add_products.dart';
-import 'package:hostel_app/order_screen.dart';
-import 'package:hostel_app/products.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'google_map.dart';
-import 'cart/cart.dart';
-import 'itemDetails/details.dart';
-import 'editProfile/editProfile.dart';
-import './itemList/itemList.dart';
 
 void main() {
   runApp(MyApp());
@@ -45,6 +34,9 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider.value(
             value: P_Restuarant(),
           ),
+          ChangeNotifierProvider.value(
+            value: P_Favs(),
+          ),
         ],
         child: MaterialApp(
           title: 'Hostel App',
@@ -59,7 +51,6 @@ class MyApp extends StatelessWidget {
             InitializerWidget.routename: (ctx) => InitializerWidget(),
             AuthScreen.routename: (ctx) => AuthScreen(),
             HomePage.routename: (ctx) => HomePage(),
-            //ItemList.routename: (ctx) => ItemList(),
             ProdtoItem.routename: (ctx) => ProdtoItem(),
             AppDrawer.routename: (ctx) => AppDrawer(),
           },

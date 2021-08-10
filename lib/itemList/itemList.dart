@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hostel_app/homepage.dart';
 import 'package:hostel_app/providers/p_resturanat.dart';
 import 'package:provider/provider.dart';
 import './food_item_card.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 class ItemList extends StatefulWidget {
   //static final String routename = "/item-list";
@@ -12,6 +10,8 @@ class ItemList extends StatefulWidget {
   @override
   _ItemListState createState() => _ItemListState();
 }
+
+int sid = 0;
 
 class _ItemListState extends State<ItemList> {
   // the scaffold global key
@@ -24,11 +24,6 @@ class _ItemListState extends State<ItemList> {
   late String search;
   bool isSearch = false;
 
-  // void onSubmitted(String value) {
-  //   setState(() => _scaffoldKey.currentState!
-  //       .showSnackBar(new SnackBar(content: new Text('You wrote $value!'))));
-  // }
-
   void allotingserach(String searchstring) {
     print("search is $searchstring");
     print("allotingserach");
@@ -40,7 +35,6 @@ class _ItemListState extends State<ItemList> {
     }
     print("isSearch is true");
     print("initstate Shoplistmain widget.isSearch");
-    // var targetValue = search.substring(0, 1) + search.substring(1);
     setState(() {
       isLoad = true;
       search = searchstring;
@@ -69,7 +63,7 @@ class _ItemListState extends State<ItemList> {
   void initState() {
     // TODO: implement initState
     print("shoplistmain inistate before");
-
+    sid = widget.shopid;
     super.initState();
     print("initstate of Shoplistmain");
 
@@ -180,7 +174,6 @@ class _ItemListState extends State<ItemList> {
 
   @override
   Widget build(BuildContext context) {
-    final shop = Provider.of<P_Restuarant>(context).findByIdShop(widget.shopid);
     return Scaffold(
       key: _explorePageScaffoldKey,
       backgroundColor: Colors.white,
@@ -309,56 +302,42 @@ class _ItemListState extends State<ItemList> {
                   Expanded(
                     child: Card(
                       elevation: 0,
-                      child: isLoad
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : !isSearch
-                              ? Consumer<P_Restuarant>(
-                                  builder: (context, menu, _) =>
-                                      GridView.builder(
-                                          itemCount: menu.itemss.length,
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            mainAxisSpacing: 4,
-                                            crossAxisSpacing: 4,
-                                          ),
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return menu.itemss.length == 0
-                                                ? Center(
-                                                    child:
-                                                        CircularProgressIndicator(),
-                                                  )
-                                                : Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            4.0),
-                                                    child: FoodItemCard(
-                                                      id: menu.itemss[index].id,
-                                                    ),
-                                                  );
-                                          }),
-                                )
-                              : Consumer<P_Restuarant>(
-                                  builder: (context, sea, _) =>
-                                      GridView.builder(
-                                          itemCount: sea.searchitems.length,
-                                          gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 2),
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: FoodItemCard(
-                                                id: sea.searchitems[index].id,
-                                              ),
-                                            );
-                                          }),
+                      child: !isSearch
+                          ? Consumer<P_Restuarant>(
+                              builder: (context, menu, _) => GridView.builder(
+                                itemCount: menu.itemss.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 4,
+                                  crossAxisSpacing: 4,
                                 ),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: FoodItemCard(
+                                      id: menu.itemss[index].id,
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          : Consumer<P_Restuarant>(
+                              builder: (context, sea, _) => GridView.builder(
+                                  itemCount: sea.searchitems.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: FoodItemCard(
+                                        id: sea.searchitems[index].id,
+                                      ),
+                                    );
+                                  }),
+                            ),
                     ),
                   )
                 ],
@@ -486,6 +465,92 @@ class _SearchBarState extends State<SearchBar> {
           ],
         );
       },
+    );
+  }
+}
+
+class HorizontalList extends StatelessWidget {
+  Map<int, String> category = {
+    0: "Gujarati",
+    1: "Italian",
+    2: "Indian",
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 90.0,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return Category(
+            image_location: 'assets/images/lunch.jpeg',
+            image_caption: category[index].toString(),
+          );
+        },
+        itemCount: category.length,
+      ),
+    );
+  }
+}
+
+class Category extends StatefulWidget {
+  final String image_location;
+  final String image_caption;
+
+  Category({
+    required this.image_location,
+    required this.image_caption,
+  });
+
+  @override
+  _CategoryState createState() => _CategoryState();
+}
+
+class _CategoryState extends State<Category> {
+  void _selectPage2(String cate) {
+    print("_selectpage c_id is $cate");
+    Provider.of<P_Restuarant>(context, listen: false)
+        .fetchItemByCategory(sid, widget.image_caption)
+        .then((value) {})
+        .catchError((onError) {
+      print(onError);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: InkWell(
+        onTap: () {
+          _selectPage2(widget.image_caption);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+            width: 100.0,
+            height: 150.0,
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Image.asset(
+                    widget.image_location,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    widget.image_caption,
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

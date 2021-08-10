@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class P_Restuarant with ChangeNotifier {
-  final url = "http://44b49a46d3ca.ngrok.io";
+  final url = "http://d221c891af5c.ngrok.io";
   List<GetRestuarant> items = [];
   List<GetItems> itemss = [];
   List<GetRestuarant> searchitem = [];
@@ -187,6 +187,39 @@ class P_Restuarant with ChangeNotifier {
       items = loadedshop;
       print(items);
       print(res);
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  Future<void> fetchItemByCategory(int id, String category) async {
+    print("fetch by category");
+    print(category);
+    try {
+      final List<GetItems> loadedshop = [];
+      final response = await http.get(
+        Uri.parse('$url/get_items_bycategory/$id/$category'),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+      final res = json.decode(response.body);
+      print(res);
+      res.forEach(
+        (f) => loadedshop.add(
+          GetItems(
+            id: f['id'],
+            name: f['Name'],
+            description: f['Description'],
+            price: f['Price'],
+            category: f['Category'],
+          ),
+        ),
+      );
+      itemss = loadedshop;
+      print(itemss);
+      notifyListeners();
     } catch (error) {
       throw (error);
     }

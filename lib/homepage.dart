@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:hostel_app/drawer.dart';
 import 'package:hostel_app/products.dart';
 import 'package:hostel_app/providers/p_resturanat.dart';
@@ -460,7 +459,6 @@ class HorizontalList extends StatelessWidget {
           return Category(
             image_location: 'assets/images/lunch.jpeg',
             image_caption: category[index].toString(),
-            categoryId: index,
           );
         },
         itemCount: category.length,
@@ -472,12 +470,10 @@ class HorizontalList extends StatelessWidget {
 class Category extends StatefulWidget {
   final String image_location;
   final String image_caption;
-  final int categoryId;
 
   Category({
     required this.image_location,
     required this.image_caption,
-    required this.categoryId,
   });
 
   @override
@@ -486,29 +482,12 @@ class Category extends StatefulWidget {
 
 class _CategoryState extends State<Category> {
   void _selectPage(String cate) {
-    // setState(() {
-    //   selectIndex = index;
-    // });
-    // setState(() {
-    //   isLoad = true;
-    // });
-    // int c_id = Provider.of<P_Restuarant>(context, listen: false)
-    //     .items[0]
-    //     .category[selectIndex]
-    //     .categoryId;
     print("_selectpage c_id is $cate");
     Provider.of<P_Restuarant>(context, listen: false)
         .fetchByCategory(cate)
-        .then((value) {
-      print("then value in p_shoppage search");
-      // setState(() {
-      //   isLoad = false;
-      // });
-    }).catchError((onError) {
+        .then((value) {})
+        .catchError((onError) {
       print(onError);
-      // setState(() {
-      //   isLoad = false;
-      // });
     });
   }
 
@@ -518,11 +497,7 @@ class _CategoryState extends State<Category> {
       padding: const EdgeInsets.all(2.0),
       child: InkWell(
         onTap: () {
-          setState(() {
-            // selectIndex = widget.categoryId;
-            // print(selectIndex);
-            _selectPage(widget.image_caption);
-          });
+          _selectPage(widget.image_caption);
         },
         child: Padding(
           padding: const EdgeInsets.all(2.0),
