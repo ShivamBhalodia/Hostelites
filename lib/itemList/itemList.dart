@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/providers/p_resturanat.dart';
+import 'package:hostel_app/utils/size_config.dart';
 import 'package:provider/provider.dart';
 import './food_item_card.dart';
 
@@ -180,16 +181,22 @@ class _ItemListState extends State<ItemList> {
       body: Column(
         children: [
           Container(
-            height: 52,
+            height: 5.78144853875 * SizeConfig.heightMultiplier,
             decoration: BoxDecoration(color: Colors.white, boxShadow: [
-              BoxShadow(color: Colors.grey, offset: Offset(4, 4), blurRadius: 5)
+              BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.97222222222 * SizeConfig.widthMultiplier,
+                      0.44472681067 * SizeConfig.heightMultiplier),
+                  blurRadius: 0.55590851334 * SizeConfig.heightMultiplier)
             ]),
             child: Row(
               children: [
                 Container(
-                  height: 100,
+                  height: 11.1181702668 * SizeConfig.heightMultiplier,
                   // width: maxW * 0.1,
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 3.64583333333 * SizeConfig.widthMultiplier,
+                      vertical: 1.11181702668 * SizeConfig.heightMultiplier),
                   child: InkWell(
                     onTap: () {
                       setState(() {
@@ -199,15 +206,21 @@ class _ItemListState extends State<ItemList> {
                     },
                     child: Icon(
                       Icons.arrow_back,
-                      size: 25,
+                      size: 2.77954256671 * SizeConfig.heightMultiplier,
                     ),
                   ),
                 ),
                 Expanded(
                   flex: 8,
                   child: Container(
-                      padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
-                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.fromLTRB(
+                          3.64583333333 * SizeConfig.widthMultiplier,
+                          1.11181702668 * SizeConfig.heightMultiplier,
+                          0,
+                          1.11181702668 * SizeConfig.heightMultiplier),
+                      margin: EdgeInsets.symmetric(
+                          horizontal:
+                              3.64583333333 * SizeConfig.widthMultiplier),
                       child: SearchBar(
                         allotSearch: allotingserach,
                       )),
@@ -217,7 +230,8 @@ class _ItemListState extends State<ItemList> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 3.64583333333 * SizeConfig.widthMultiplier),
               child: Column(
                 children: <Widget>[
                   Card(
@@ -227,7 +241,9 @@ class _ItemListState extends State<ItemList> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Padding(
-                            padding: EdgeInsets.only(left: 10),
+                            padding: EdgeInsets.only(
+                                left:
+                                    2.43055555556 * SizeConfig.widthMultiplier),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -236,13 +252,17 @@ class _ItemListState extends State<ItemList> {
                                     Icon(
                                       Icons.restaurant,
                                       color: Colors.yellow,
-                                      size: 30,
+                                      size: 3.33545108005 *
+                                          SizeConfig.heightMultiplier,
                                     ),
-                                    SizedBox(width: 10),
+                                    SizedBox(
+                                        width: 2.43055555556 *
+                                            SizeConfig.widthMultiplier),
                                     Text(
                                       "shop.r_name",
                                       style: TextStyle(
-                                          fontSize: 25,
+                                          fontSize: 2.77954256671 *
+                                              SizeConfig.heightMultiplier,
                                           color: Color(0xFF3a3a3b),
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -251,7 +271,8 @@ class _ItemListState extends State<ItemList> {
                                 Text(
                                   "shop.address",
                                   style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 1.66772554003 *
+                                          SizeConfig.heightMultiplier,
                                       color: Color(0xFF3a3a3b),
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -261,43 +282,55 @@ class _ItemListState extends State<ItemList> {
                           semanticContainer: true,
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           child: Image.asset("assets/images/lunch.jpeg",
-                              fit: BoxFit.cover, width: 100, height: 100),
+                              fit: BoxFit.cover,
+                              width: 24.3055555556 * SizeConfig.widthMultiplier,
+                              height:
+                                  11.1181702668 * SizeConfig.heightMultiplier),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: BorderRadius.circular(
+                                2.22363405337 * SizeConfig.heightMultiplier),
                           ),
                           elevation: 6,
                           margin: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
+                              horizontal:
+                                  4.86111111111 * SizeConfig.widthMultiplier,
+                              vertical:
+                                  1.66772554003 * SizeConfig.heightMultiplier),
                         ),
                       ],
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                      borderRadius: BorderRadius.circular(
+                          2.22363405337 * SizeConfig.heightMultiplier),
                     ),
                     elevation: 6,
-                    margin: EdgeInsets.symmetric(vertical: 15),
+                    margin: EdgeInsets.symmetric(
+                        vertical: 1.66772554003 * SizeConfig.heightMultiplier),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 1.11181702668 * SizeConfig.heightMultiplier),
                   !isSearch
                       ? Center(
                           child: Text(
                             'Categories',
                             style: TextStyle(
-                                fontSize: 22.0,
+                                fontSize:
+                                    2.4459974587 * SizeConfig.heightMultiplier,
                                 fontWeight: FontWeight.w600,
-                                letterSpacing: 1.2),
+                                letterSpacing:
+                                    0.1334180432 * SizeConfig.heightMultiplier),
                           ),
                         )
                       : Container(),
                   !isSearch ? HorizontalList() : Container(),
-                  SizedBox(height: 10),
+                  SizedBox(height: 1.11181702668 * SizeConfig.heightMultiplier),
                   Center(
                       child: Text(
                     'Menu',
                     style: TextStyle(
-                        fontSize: 22.0,
+                        fontSize: 2.4459974587 * SizeConfig.heightMultiplier,
                         fontWeight: FontWeight.w600,
-                        letterSpacing: 1.2),
+                        letterSpacing:
+                            0.1334180432 * SizeConfig.heightMultiplier),
                   )),
                   Expanded(
                     child: Card(
@@ -314,7 +347,11 @@ class _ItemListState extends State<ItemList> {
                                 ),
                                 itemBuilder: (BuildContext context, int index) {
                                   return Padding(
-                                    padding: const EdgeInsets.all(4.0),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 0.44472681067 *
+                                            SizeConfig.heightMultiplier,
+                                        horizontal: 0.97222222222 *
+                                            SizeConfig.widthMultiplier),
                                     child: FoodItemCard(
                                       id: menu.itemss[index].id,
                                     ),
@@ -331,7 +368,11 @@ class _ItemListState extends State<ItemList> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return Padding(
-                                      padding: const EdgeInsets.all(4.0),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 0.44472681067 *
+                                              SizeConfig.heightMultiplier,
+                                          horizontal: 0.97222222222 *
+                                              SizeConfig.widthMultiplier),
                                       child: FoodItemCard(
                                         id: sea.searchitems[index].id,
                                       ),
@@ -440,7 +481,8 @@ class _SearchBarState extends State<SearchBar> {
                               },
                               child: Icon(
                                 Icons.search,
-                                size: 30,
+                                size:
+                                    3.33545108005 * SizeConfig.heightMultiplier,
                               ))
                         ],
                       ))
@@ -459,7 +501,7 @@ class _SearchBarState extends State<SearchBar> {
                     },
                     child: Icon(
                       Icons.search,
-                      size: 30,
+                      size: 3.33545108005 * SizeConfig.heightMultiplier,
                     ),
                   )
           ],
@@ -479,7 +521,7 @@ class HorizontalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 90.0,
+      height: 10.0063532402 * SizeConfig.heightMultiplier,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
@@ -521,16 +563,20 @@ class _CategoryState extends State<Category> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(2.0),
+      padding: EdgeInsets.symmetric(
+          vertical: 0.22236340533 * SizeConfig.heightMultiplier,
+          horizontal: 0.48611111111 * SizeConfig.widthMultiplier),
       child: InkWell(
         onTap: () {
           _selectPage2(widget.image_caption);
         },
         child: Padding(
-          padding: const EdgeInsets.all(2.0),
+          padding: EdgeInsets.symmetric(
+              vertical: 0.22236340533 * SizeConfig.heightMultiplier,
+              horizontal: 0.48611111111 * SizeConfig.widthMultiplier),
           child: Container(
-            width: 100.0,
-            height: 150.0,
+            width: 24.3055555556 * SizeConfig.widthMultiplier,
+            height: 16.6772554003 * SizeConfig.heightMultiplier,
             child: Column(
               children: <Widget>[
                 Expanded(
@@ -543,7 +589,8 @@ class _CategoryState extends State<Category> {
                   alignment: Alignment.topCenter,
                   child: Text(
                     widget.image_caption,
-                    style: TextStyle(fontSize: 16.0),
+                    style: TextStyle(
+                        fontSize: 1.77890724269 * SizeConfig.heightMultiplier),
                   ),
                 ),
               ],

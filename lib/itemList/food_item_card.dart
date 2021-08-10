@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:hostel_app/providers/p_resturanat.dart';
+import 'package:hostel_app/utils/size_config.dart';
 import 'package:provider/provider.dart';
 
 class FoodItemCard extends StatelessWidget {
@@ -22,7 +23,8 @@ class FoodItemCard extends StatelessWidget {
       onTap: () => null,
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(
+              1.66772554003 * SizeConfig.heightMultiplier),
         ),
         elevation: 4,
         child: Column(
@@ -31,12 +33,14 @@ class FoodItemCard extends StatelessWidget {
               children: <Widget>[
                 ClipRRect(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(
+                        1.66772554003 * SizeConfig.heightMultiplier),
+                    topRight: Radius.circular(
+                        1.66772554003 * SizeConfig.heightMultiplier),
                   ),
                   child: Image.asset(
                     "assets/images/lunch.jpeg",
-                    height: 135,
+                    height: 15.0095298602 * SizeConfig.heightMultiplier,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
@@ -45,11 +49,11 @@ class FoodItemCard extends StatelessWidget {
                   bottom: 0,
                   right: 0,
                   child: Container(
-                    width: 175,
+                    width: 42.5347222222 * SizeConfig.widthMultiplier,
                     color: Colors.black38,
                     padding: EdgeInsets.symmetric(
-                      vertical: 5,
-                      horizontal: 5,
+                      vertical: 0.55590851334 * SizeConfig.heightMultiplier,
+                      horizontal: 1.21527777778 * SizeConfig.widthMultiplier,
                     ),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,7 +61,8 @@ class FoodItemCard extends StatelessWidget {
                           Text(
                             menus.name,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize:
+                                  2.00127064803 * SizeConfig.heightMultiplier,
                               color: Colors.white,
                             ),
                             softWrap: true,
@@ -66,7 +71,8 @@ class FoodItemCard extends StatelessWidget {
                           Text(
                             menus.price.toString(),
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize:
+                                  2.00127064803 * SizeConfig.heightMultiplier,
                               color: Colors.white,
                             ),
                             softWrap: true,
@@ -82,17 +88,21 @@ class FoodItemCard extends StatelessWidget {
               children: <Widget>[
                 InkWell(
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 7, horizontal: 5),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 0.77827191867 * SizeConfig.heightMultiplier,
+                          horizontal:
+                              1.21527777778 * SizeConfig.widthMultiplier),
                       child: Row(children: <Widget>[
                         Icon(
                           Icons.shopping_cart,
                           color: Colors.red,
-                          size: 25.0,
+                          size: 2.77954256671 * SizeConfig.heightMultiplier,
                         ),
                         Text(
                           'Add to Cart',
                           style: TextStyle(
-                            fontSize: 16.0,
+                            fontSize:
+                                1.77890724269 * SizeConfig.heightMultiplier,
                             color: Colors.red,
                           ),
                         ),
@@ -101,11 +111,14 @@ class FoodItemCard extends StatelessWidget {
                     onTap: () {}),
                 InkWell(
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 7, horizontal: 5),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 0.77827191867 * SizeConfig.heightMultiplier,
+                          horizontal:
+                              1.21527777778 * SizeConfig.widthMultiplier),
                       child: Icon(
                         Icons.favorite_border_outlined,
                         color: Colors.red,
-                        size: 27,
+                        size: 3.00190597205 * SizeConfig.heightMultiplier,
                       ),
                     ),
                     onTap: () {})
