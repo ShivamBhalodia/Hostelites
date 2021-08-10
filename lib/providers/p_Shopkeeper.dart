@@ -13,10 +13,10 @@ class P_Shopkeeper with ChangeNotifier {
     String name,
     bool isUser,
   ) async {
-    final url = 'http://953fa7d8445a.ngrok.io/validatephonesendotp';
+    //final url = 'http://953fa7d8445a.ngrok.io/validatephonesendotp';
     try {
       final response = await http.post(
-        url,
+        Uri.parse('http://5fad36087463.ngrok.io/validatephonesendotp'),
         headers: {"Content-Type": "application/json"},
         body: json.encode(
           {
@@ -45,10 +45,10 @@ class P_Shopkeeper with ChangeNotifier {
     String password,
     bool isUser,
   ) async {
-    final url = 'https://953fa7d8445a.ngrok.io/login';
+    //final url = 'https://953fa7d8445a.ngrok.io/login';
     try {
       final response = await http.post(
-        url,
+        Uri.parse('https://5fad36087463.ngrok.io/login'),
         headers: {"Content-Type": "application/json"},
         body: json.encode(
           {

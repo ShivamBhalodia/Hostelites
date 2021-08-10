@@ -187,7 +187,7 @@ class _ItemListState extends State<ItemList> {
                     FoodItemCard(),
                     FoodItemCard(),
                     FoodItemCard(),
-                    FoodItemCard()
+                    FoodItemCard(),
                   ],
                 ),
               ),

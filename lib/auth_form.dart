@@ -5,7 +5,6 @@ import 'package:hostel_app/homepage.dart';
 import 'package:hostel_app/models/loginConsumer.dart';
 import 'package:hostel_app/providers/p_Shopkeeper.dart';
 import 'package:hostel_app/providers/p_consumer.dart';
-import 'package:hostel_app/settings.dart';
 import 'package:provider/provider.dart';
 
 class AuthForm extends StatefulWidget {

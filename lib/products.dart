@@ -1,105 +1,19 @@
 import 'package:flutter/material.dart';
-
-class Products extends StatefulWidget {
-  const Products({Key? key}) : super(key: key);
-
-  @override
-  _ProductsState createState() => _ProductsState();
-}
-
-class _ProductsState extends State<Products> {
-  List product_list = [
-    {
-      "name": "P_1",
-      "picture": 'lib/images/907106.jpg',
-    },
-    {
-      "name": "P_2",
-      "picture": 'lib/images/bootstrap-carousel-slide-4.jpg',
-    },
-    {
-      "name": "P_3",
-      "picture": 'lib/images/food2.jpg',
-    },
-    {
-      "name": "p_4",
-      "picture":
-          'lib/images/FSSAI-Drafts-Regulations-on-Safe-and-Wholesome-Food-for-School-Children.jpg',
-    },
-    {
-      "name": "P_5",
-      "picture": 'lib/images/H220546cb02cc4c4da8e6dc437d0986d9f.jpg',
-    },
-    {
-      "name": "P_6",
-      "picture": 'lib/images/bootstrap-carousel-slide-4.jpg',
-    },
-    {
-      "name": "P_7",
-      "picture": 'lib/images/907106.jpg',
-    },
-    {
-      "name": "P_8",
-      "picture": 'lib/images/907106.jpg',
-    },
-    {
-      "name": "P_9",
-      "picture": 'lib/images/bootstrap-carousel-slide-4.jpg',
-    },
-    {
-      "name": "P_10",
-      "picture": 'lib/images/food2.jpg',
-    },
-    {
-      "name": "p_11",
-      "picture":
-          'lib/images/FSSAI-Drafts-Regulations-on-Safe-and-Wholesome-Food-for-School-Children.jpg',
-    },
-    {
-      "name": "P_12",
-      "picture": 'lib/images/H220546cb02cc4c4da8e6dc437d0986d9f.jpg',
-    },
-    {
-      "name": "P_13",
-      "picture": 'lib/images/bootstrap-carousel-slide-4.jpg',
-    },
-    {
-      "name": "P_14",
-      "picture": 'lib/images/907106.jpg',
-    },
-  ];
-  @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
-        itemCount: product_list.length,
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Single_prod(
-              prod_name: product_list[index]['name'],
-              prod_pricture: product_list[index]['picture'],
-            ),
-          );
-        });
-  }
-}
+import 'package:hostel_app/providers/p_resturanat.dart';
+import 'package:provider/provider.dart';
 
 class Single_prod extends StatelessWidget {
-  final prod_name;
-  final prod_pricture;
-
+  final id;
   Single_prod({
-    this.prod_name,
-    this.prod_pricture,
+    this.id,
   });
 
   @override
   Widget build(BuildContext context) {
+    final shop = Provider.of<P_Restuarant>(context).findByIdShop(id);
     return Card(
       child: Hero(
-        tag: prod_name,
+        tag: shop.r_name,
         child: Material(
           child: InkWell(
             onTap: () {},
@@ -108,14 +22,14 @@ class Single_prod extends StatelessWidget {
                 color: Colors.white70,
                 child: ListTile(
                   leading: Text(
-                    prod_name,
+                    shop.o_name,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   trailing: Icon(Icons.favorite_border),
                 ),
               ),
-              child: Image.asset(
-                prod_pricture,
+              child: Image.network(
+                "https://i.pinimg.com/736x/f2/fd/b4/f2fdb4f12c97f857da3fa4e1d19f1128.jpg",
                 fit: BoxFit.cover,
               ),
             ),
