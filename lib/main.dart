@@ -5,6 +5,7 @@ import 'package:hostel_app/homepage.dart';
 import 'package:hostel_app/initial_file.dart';
 import 'package:hostel_app/login_screen.dart';
 import 'package:hostel_app/mainpage.dart';
+import 'package:hostel_app/prodTOitem.dart';
 import 'package:hostel_app/providers/p_Shopkeeper.dart';
 import 'package:hostel_app/providers/p_consumer.dart';
 import 'package:hostel_app/providers/p_resturanat.dart';
@@ -57,8 +58,9 @@ class MyApp extends StatelessWidget {
           routes: {
             InitializerWidget.routename: (ctx) => InitializerWidget(),
             AuthScreen.routename: (ctx) => AuthScreen(),
-            //SettingsScreen.routename: (ctx) => SettingsScreen(),
             HomePage.routename: (ctx) => HomePage(),
+            //ItemList.routename: (ctx) => ItemList(),
+            ProdtoItem.routename: (ctx) => ProdtoItem(),
           },
         ));
     // return MaterialApp(

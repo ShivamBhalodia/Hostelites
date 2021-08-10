@@ -1,14 +1,23 @@
 import "package:flutter/material.dart";
+import 'package:hostel_app/providers/p_resturanat.dart';
+import 'package:provider/provider.dart';
 
 class FoodItemCard extends StatelessWidget {
-  final String title = "Pizza";
-  final String description = "";
-  final String price = '\$100';
+  final int id;
+  // final String title = "Pizza";
+  // final String description = "";
+  // final String price = '\$100';
 
-  FoodItemCard();
+  FoodItemCard({
+    required this.id,
+  });
 
   @override
   Widget build(BuildContext context) {
+    print("inside foodItemCard");
+    print(id);
+    final menus = Provider.of<P_Restuarant>(context).findByIdItems(id);
+    print(menus.name);
     return InkWell(
       onTap: () => null,
       child: Card(
@@ -46,7 +55,7 @@ class FoodItemCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
-                            title,
+                            menus.name,
                             style: TextStyle(
                               fontSize: 18,
                               color: Colors.white,
@@ -55,7 +64,7 @@ class FoodItemCard extends StatelessWidget {
                             overflow: TextOverflow.fade,
                           ),
                           Text(
-                            price,
+                            menus.price.toString(),
                             style: TextStyle(
                               fontSize: 18,
                               color: Colors.white,

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hostel_app/providers/p_resturanat.dart';
+import 'package:provider/provider.dart';
 import './horizontal_list.dart';
 import './food_item_card.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 class ItemList extends StatefulWidget {
-  ItemList();
+  //static final String routename = "/item-list";
+  int shopid;
+  ItemList(this.shopid);
   @override
   _ItemListState createState() => _ItemListState();
 }
@@ -12,6 +16,39 @@ class ItemList extends StatefulWidget {
 class _ItemListState extends State<ItemList> {
   // the scaffold global key
   GlobalKey<ScaffoldState> _explorePageScaffoldKey = GlobalKey();
+
+  bool initial = true;
+  bool isLoading = false;
+  bool isLoad = false;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print("didchange called");
+    if (initial) {
+      setState(() {
+        isLoading = true;
+      });
+      Provider.of<P_Restuarant>(context, listen: false)
+          .fetchItems(widget.shopid)
+          .then((value) {
+        setState(() {
+          isLoading = false;
+        });
+        initial = false;
+      }).catchError((onerror) {
+        print("error is");
+        print(onerror);
+        setState(() {
+          isLoading = false;
+        });
+
+        const errorMessage = 'Something went wrong. Please try again later';
+        //return showErrorDialoug(1, errorMessage, context);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -66,31 +103,11 @@ class _ItemListState extends State<ItemList> {
 
   @override
   Widget build(BuildContext context) {
+    final shop = Provider.of<P_Restuarant>(context).findByIdShop(widget.shopid);
     return Scaffold(
       key: _explorePageScaffoldKey,
       backgroundColor: Colors.white,
       appBar: searchBar!.build(context),
-      // AppBar(
-      //   backgroundColor: Colors.pink,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     icon: Icon(
-      //       Icons.arrow_back,
-      //       color: Colors.white,
-      //     ),
-      //     onPressed: () {},
-      //   ),
-      //   actions: <Widget>[
-      //     // searchBar!.getSearchAction(context),
-      //     IconButton(
-      //       icon: Icon(
-      //         Icons.share,
-      //         color: Colors.white,
-      //       ),
-      //       onPressed: () {},
-      //     ),
-      //   ],
-      // ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: Column(
@@ -115,7 +132,7 @@ class _ItemListState extends State<ItemList> {
                               ),
                               SizedBox(width: 10),
                               Text(
-                                'Burger king',
+                                "shop.r_name",
                                 style: TextStyle(
                                     fontSize: 25,
                                     color: Color(0xFF3a3a3b),
@@ -124,7 +141,7 @@ class _ItemListState extends State<ItemList> {
                             ],
                           ),
                           Text(
-                            'Ahmedabad, Gujarat',
+                            "shop.address",
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Color(0xFF3a3a3b),
@@ -173,22 +190,26 @@ class _ItemListState extends State<ItemList> {
             Expanded(
               child: Card(
                 elevation: 0,
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  children: [
-                    FoodItemCard(),
-                    FoodItemCard(),
-                    FoodItemCard(),
-                    FoodItemCard(),
-                    FoodItemCard(),
-                    FoodItemCard(),
-                    FoodItemCard(),
-                    FoodItemCard(),
-                    FoodItemCard(),
-                    FoodItemCard(),
-                  ],
+                child: Consumer<P_Restuarant>(
+                  builder: (context, menu, _) => GridView.builder(
+                      itemCount: menu.itemss.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return menu.itemss.length == 0
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: FoodItemCard(
+                                  id: menu.itemss[index].id,
+                                ),
+                              );
+                      }),
                 ),
               ),
             )

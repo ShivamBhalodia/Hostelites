@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hostel_app/itemList/itemList.dart';
+import 'package:hostel_app/prodTOitem.dart';
 import 'package:hostel_app/providers/p_resturanat.dart';
 import 'package:provider/provider.dart';
 
 class Single_prod extends StatelessWidget {
-  final id;
+  final int id;
   Single_prod({
-    this.id,
+    required this.id,
   });
 
   @override
@@ -16,7 +18,16 @@ class Single_prod extends StatelessWidget {
         tag: shop.r_name,
         child: Material(
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              print("jainam");
+              print(id);
+              Navigator.of(context).pushNamed(
+                ProdtoItem.routename,
+                arguments: {
+                  'sid': id,
+                },
+              );
+            },
             child: GridTile(
               footer: Container(
                 color: Colors.white70,
