@@ -61,6 +61,7 @@ class MyApp extends StatelessWidget {
             HomePage.routename: (ctx) => HomePage(),
             //ItemList.routename: (ctx) => ItemList(),
             ProdtoItem.routename: (ctx) => ProdtoItem(),
+            AppDrawer.routename: (ctx) => AppDrawer(),
           },
         ));
     // return MaterialApp(

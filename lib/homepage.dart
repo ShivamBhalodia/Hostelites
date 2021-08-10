@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:hostel_app/drawer.dart';
-import 'package:hostel_app/itemList/horizontal_list.dart';
 import 'package:hostel_app/products.dart';
 import 'package:hostel_app/providers/p_resturanat.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +12,12 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+int _current = 0;
+int selectIndex = 0;
+
+String cate = "";
+
 class _HomePageState extends State<HomePage> {
-  int _current = 0;
   List imgList = [
     'lib/images/907106.jpg',
     'lib/images/bootstrap-carousel-slide-4.jpg',
@@ -36,6 +39,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         isLoading = true;
       });
+
       Provider.of<P_Restuarant>(context, listen: false)
           .fetchrestuarant()
           .then((value) {
@@ -44,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         });
         initial = false;
       }).catchError((onerror) {
-        print("error is");
+        print("error is jaisin");
         print(onerror);
         setState(() {
           isLoading = false;
@@ -55,24 +59,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
-
-  // AppBar buildAppBar(BuildContext context) {
-  //   return new AppBar(
-  //     title: new Text('Hostel-App'),
-  //     actions: <Widget>[
-  //       searchBar!.getSearchAction(context),
-  //       IconButton(
-  //         icon: Icon(
-  //           Icons.notifications,
-  //           color: Colors.white,
-  //         ),
-  //         onPressed: () {
-  //           // do something
-  //         },
-  //       )
-  //     ],
-  //   );
-  // }
 
   late String search;
   bool isSearch = false;
@@ -171,7 +157,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget image_carousel = Container(
+    Widget imageCarousel = Container(
       height: 200.0,
       child: CarouselSlider(
         options: CarouselOptions(
@@ -218,7 +204,7 @@ class _HomePageState extends State<HomePage> {
     );
     return Scaffold(
       key: _scaffoldKey,
-      drawer: AppDrawer(),
+      //drawer: AppDrawer(),
       body: Column(
         children: <Widget>[
           Container(
@@ -234,13 +220,10 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: InkWell(
                     onTap: () {
-                      setState(() {
-                        isSearch = false;
-                      });
-                      Navigator.of(context).pop();
+                      AppDrawer();
                     },
                     child: Icon(
-                      Icons.arrow_back,
+                      Icons.list,
                       size: 25,
                     ),
                   ),
@@ -258,7 +241,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           !isSearch
-              ? image_carousel
+              ? imageCarousel
               : Flexible(
                   child: isLoad
                       ? Center(
@@ -377,8 +360,8 @@ class _SearchBarState extends State<SearchBar> {
       builder: (context, constraints) {
         var maxH = constraints.maxHeight;
         var maxW = constraints.maxWidth;
-        print(
-            "shoplist SearchBar h is ${constraints.maxHeight} w is ${constraints.maxWidth}");
+        // print(
+        //     "shoplist SearchBar h is ${constraints.maxHeight} w is ${constraints.maxWidth}");
         return Row(
           children: [
             Expanded(
@@ -456,6 +439,116 @@ class _SearchBarState extends State<SearchBar> {
           ],
         );
       },
+    );
+  }
+}
+
+class HorizontalList extends StatelessWidget {
+  Map<int, String> category = {
+    0: "Gujarati",
+    1: "Pubjabi",
+    2: "Indian",
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 90.0,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return Category(
+            image_location: 'assets/images/lunch.jpeg',
+            image_caption: category[index].toString(),
+            categoryId: index,
+          );
+        },
+        itemCount: category.length,
+      ),
+    );
+  }
+}
+
+class Category extends StatefulWidget {
+  final String image_location;
+  final String image_caption;
+  final int categoryId;
+
+  Category({
+    required this.image_location,
+    required this.image_caption,
+    required this.categoryId,
+  });
+
+  @override
+  _CategoryState createState() => _CategoryState();
+}
+
+class _CategoryState extends State<Category> {
+  void _selectPage(String cate) {
+    // setState(() {
+    //   selectIndex = index;
+    // });
+    // setState(() {
+    //   isLoad = true;
+    // });
+    // int c_id = Provider.of<P_Restuarant>(context, listen: false)
+    //     .items[0]
+    //     .category[selectIndex]
+    //     .categoryId;
+    print("_selectpage c_id is $cate");
+    Provider.of<P_Restuarant>(context, listen: false)
+        .fetchByCategory(cate)
+        .then((value) {
+      print("then value in p_shoppage search");
+      // setState(() {
+      //   isLoad = false;
+      // });
+    }).catchError((onError) {
+      print(onError);
+      // setState(() {
+      //   isLoad = false;
+      // });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            // selectIndex = widget.categoryId;
+            // print(selectIndex);
+            _selectPage(widget.image_caption);
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+            width: 100.0,
+            height: 150.0,
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Image.asset(
+                    widget.image_location,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    widget.image_caption,
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hostel_app/homepage.dart';
 import 'package:hostel_app/providers/p_resturanat.dart';
 import 'package:provider/provider.dart';
-import './horizontal_list.dart';
 import './food_item_card.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 

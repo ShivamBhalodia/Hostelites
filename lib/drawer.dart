@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatelessWidget {
+  static final String routename = "/app-drawer";
   const AppDrawer({Key? key}) : super(key: key);
 
   @override
@@ -86,7 +87,6 @@ class AppDrawer extends StatelessWidget {
               leading: Icon(Icons.rate_review),
             ),
           ),
-          
           Divider(),
         ],
       ),

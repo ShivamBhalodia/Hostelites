@@ -5,6 +5,7 @@ class GetRestuarant {
   String o_name = "";
   String address = "";
   String loggedin_with = "";
+  String category = "";
   GetRestuarant({
     required this.id,
     required this.r_name,
@@ -12,5 +13,6 @@ class GetRestuarant {
     required this.o_name,
     required this.address,
     required this.loggedin_with,
+    required this.category,
   });
 }
