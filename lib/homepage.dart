@@ -56,42 +56,120 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  AppBar buildAppBar(BuildContext context) {
-    return new AppBar(
-      title: new Text('Hostel-App'),
-      actions: <Widget>[
-        searchBar!.getSearchAction(context),
-        IconButton(
-          icon: Icon(
-            Icons.notifications,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            // do something
-          },
-        )
-      ],
-    );
-  }
+  // AppBar buildAppBar(BuildContext context) {
+  //   return new AppBar(
+  //     title: new Text('Hostel-App'),
+  //     actions: <Widget>[
+  //       searchBar!.getSearchAction(context),
+  //       IconButton(
+  //         icon: Icon(
+  //           Icons.notifications,
+  //           color: Colors.white,
+  //         ),
+  //         onPressed: () {
+  //           // do something
+  //         },
+  //       )
+  //     ],
+  //   );
+  // }
+
+  late String search;
+  bool isSearch = false;
 
   void onSubmitted(String value) {
     setState(() => _scaffoldKey.currentState!
         .showSnackBar(new SnackBar(content: new Text('You wrote $value!'))));
   }
 
-  _HomePageState() {
-    searchBar = new SearchBar(
-        inBar: false,
-        buildDefaultAppBar: buildAppBar,
-        setState: setState,
-        onSubmitted: onSubmitted,
-        onCleared: () {
-          print("cleared");
-        },
-        onClosed: () {
-          print("closed");
-        });
+  void allotingserach(String searchstring) {
+    print("search is $searchstring");
+    print("allotingserach");
+    if (searchstring.isEmpty) {
+      setState(() {
+        isSearch = false;
+      });
+      return;
+    }
+    print("isSearch is true");
+    print("initstate Shoplistmain widget.isSearch");
+    // var targetValue = search.substring(0, 1) + search.substring(1);
+    setState(() {
+      isLoad = true;
+      search = searchstring;
+      isSearch = true;
+    });
+    Provider.of<P_Restuarant>(context, listen: false).searchfromitems(search);
+    Provider.of<P_Restuarant>(context, listen: false)
+        .searchShop(search)
+        .then((value) {
+      print("then value in p_shop search");
+      setState(() {
+        isLoad = false;
+      });
+    }).catchError((onError) {
+      setState(() {
+        isLoad = false;
+      });
+    });
   }
+
+  ScrollController _scrollController = new ScrollController();
+  ScrollController _search = new ScrollController();
+  TextEditingController _controller = TextEditingController();
+
+  void initState() {
+    // TODO: implement initState
+    print("shoplistmain inistate before");
+
+    super.initState();
+    print("initstate of Shoplistmain");
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          isLoading = true;
+        });
+        try {
+          Provider.of<P_Restuarant>(context, listen: false)
+              .fetchrestuarant()
+              .then((value) {
+            setState(() {
+              isLoading = false;
+            });
+          });
+        } catch (error) {
+          setState(() {
+            isLoading = false;
+          });
+          //showErrorDialoug(2, "Something went wrong, try again", context);
+        }
+      }
+    });
+    _search.addListener(() {
+      if (_search.position.pixels == _search.position.maxScrollExtent) {
+        setState(() {
+          isLoad = true;
+        });
+
+        Provider.of<P_Restuarant>(context, listen: false)
+            .searchShop(_controller.text)
+            .then((value) {
+          setState(() {
+            isLoad = false;
+          });
+        }).catchError((onerror) {
+          setState(() {
+            isLoad = false;
+          });
+          const errorMessage = 'Something went wrong.Please try again later';
+          //return showErrorDialoug(2, errorMessage, context);
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
@@ -140,49 +218,112 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     return Scaffold(
-      appBar: searchBar!.build(context),
       key: _scaffoldKey,
       drawer: AppDrawer(),
       body: Column(
         children: <Widget>[
-          image_carousel,
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 20.0,
-              bottom: 10,
-            ),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Top Picks For You',
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
-          ),
-          HorizontalList(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Shops',
-              style: TextStyle(fontSize: 16.0),
-            ),
-          ),
-          Flexible(
-            child: Consumer<P_Restuarant>(
-              builder: (context, rest, _) => GridView.builder(
-                  itemCount: rest.items.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Single_prod(
-                        id: rest.items[index].id,
-                      ),
-                    );
-                  }),
+          Container(
+            height: 52,
+            decoration: BoxDecoration(color: Colors.white, boxShadow: [
+              BoxShadow(color: Colors.grey, offset: Offset(4, 4), blurRadius: 5)
+            ]),
+            child: Row(
+              children: [
+                Container(
+                  height: 100,
+                  // width: maxW * 0.1,
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        isSearch = false;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 25,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 8,
+                  child: Container(
+                      padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      child: SearchBar(
+                        allotSearch: allotingserach,
+                      )),
+                ),
+              ],
             ),
           ),
+          !isSearch
+              ? image_carousel
+              : Flexible(
+                  child: isLoad
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Consumer<P_Restuarant>(
+                          builder: (context, sea, _) => GridView.builder(
+                              itemCount: sea.searchitem.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2),
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Single_prod(
+                                    id: sea.searchitem[index].id,
+                                  ),
+                                );
+                              }),
+                        ),
+                ),
+          !isSearch
+              ? Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20.0,
+                    bottom: 10,
+                  ),
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Top Picks For You',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                )
+              : Container(),
+          !isSearch ? HorizontalList() : Container(),
+          !isSearch
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Shops',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                )
+              : Container(),
+          !isSearch
+              ? Flexible(
+                  child: Consumer<P_Restuarant>(
+                    builder: (context, rest, _) => GridView.builder(
+                        itemCount: rest.items.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Single_prod(
+                              id: rest.items[index].id,
+                            ),
+                          );
+                        }),
+                  ),
+                )
+              : Container(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -197,6 +338,125 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SearchBar extends StatefulWidget {
+  const SearchBar({
+    required this.allotSearch,
+  });
+
+  final Function allotSearch;
+  @override
+  _SearchBarState createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  late FocusNode searchFocusNode;
+  bool isSearch = false;
+  final searchcontorller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    searchFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    searchFocusNode.dispose();
+    searchcontorller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        var maxH = constraints.maxHeight;
+        var maxW = constraints.maxWidth;
+        print(
+            "shoplist SearchBar h is ${constraints.maxHeight} w is ${constraints.maxWidth}");
+        return Row(
+          children: [
+            Expanded(
+              child: isSearch
+                  ? Container(
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(8 * maxH / 37.632),
+                          border: Border.all(color: Colors.black)),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 1 * maxH / 37.632,
+                          horizontal: 4 * maxW / 232.368),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  3 * maxW / 232.368, 0, 0, 3 * maxH / 37.632),
+                              child: TextField(
+                                decoration: InputDecoration(isDense: true),
+                                controller: searchcontorller,
+                                focusNode: searchFocusNode,
+                                style: TextStyle(fontSize: 18 * maxH / 37.632),
+                                keyboardType: TextInputType.text,
+                                maxLines: 1,
+                                onSubmitted: (value) {
+                                  if (value == "") {
+                                    setState(() {
+                                      isSearch = false;
+                                    });
+                                    widget.allotSearch("");
+                                  } else {
+                                    widget.allotSearch(value);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                              onTap: () {
+                                if (searchcontorller.text == "") {
+                                  setState(() {
+                                    isSearch = false;
+                                  });
+                                  widget.allotSearch("");
+                                } else {
+                                  widget.allotSearch(searchcontorller.text);
+                                }
+                                searchFocusNode.unfocus();
+                              },
+                              child: Icon(
+                                Icons.search,
+                                size: 30,
+                              ))
+                        ],
+                      ))
+                  : Container(),
+            ),
+            isSearch
+                ? Container(
+                    color: Colors.blue,
+                  )
+                : InkWell(
+                    onTap: () {
+                      setState(() {
+                        isSearch = !isSearch;
+                      });
+                      searchFocusNode.requestFocus();
+                    },
+                    child: Icon(
+                      Icons.search,
+                      size: 30,
+                    ),
+                  )
+          ],
+        );
+      },
     );
   }
 }

@@ -7,11 +7,11 @@ class AboutUsCard extends StatelessWidget {
   final String mail;
   final String linkedin;
   AboutUsCard({
-    @required this.name,
-    @required this.college,
-    @required this.city,
-    @required this.mail,
-    @required this.linkedin,
+    required this.name,
+    required this.college,
+    required this.city,
+    required this.mail,
+    required this.linkedin,
   });
 
   @override
