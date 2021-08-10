@@ -16,7 +16,7 @@ class P_Restuarant with ChangeNotifier {
     try {
       final List<GetRestuarant> loadedshop = [];
       final response = await http.get(
-        Uri.parse('http://9c4395f19f3d.ngrok.io/get_restaurants'),
+        Uri.parse('http://bd72ae609002.ngrok.io/get_restaurants'),
         headers: {
           "Content-Type": "application/json",
         },
@@ -53,7 +53,7 @@ class P_Restuarant with ChangeNotifier {
     try {
       final List<GetItems> loadedshop = [];
       final response = await http.get(
-        Uri.parse('http://9c4395f19f3d.ngrok.io/get_items/$id'),
+        Uri.parse('http://bd72ae609002.ngrok.io/get_items/$id'),
         headers: {
           "Content-Type": "application/json",
         },
@@ -84,40 +84,44 @@ class P_Restuarant with ChangeNotifier {
     return itemss.firstWhere((element) => element.id == id);
   }
 
-  bool searchfromitems(String search) {
-    print("serachfromitems");
-    searchitems = [];
-    if (items != null) {
-      List<GetItems> searchlist = itemss
-          .where((element) =>
-              element.name.toLowerCase().contains(search.toLowerCase()))
-          .toList();
-      if (searchlist != null) {
-        searchlist.forEach((element) {
-          print("element is ");
-          print(element);
-          final tempp = searchitem.firstWhere(
-            (f) => f.id == element.id,
-          );
-          if (tempp == null) {
-            searchitems.add(element);
-            print("it is added");
-          }
-        });
-        notifyListeners();
-        return true;
-      }
-      return false;
-    }
+  Future<void> searchfromitems(String search, int id) async {
+    print("serachfromitems $search");
+    print(id);
+    final response = await http.get(
+      Uri.parse('http://bd72ae609002.ngrok.io/get_items_byname/$id/$search'),
+    );
+    final res = json.decode(response.body);
+    final List<GetItems> loadedshop = [];
+    print('res');
+    print(res);
+    res.forEach(
+      (f) => loadedshop.add(
+        GetItems(
+          id: f['id'],
+          name: f['Name'],
+          description: f['Description'],
+          price: f['Price'],
+          category: f['Category'],
+        ),
+      ),
+    );
+    print(res);
+    print(loadedshop);
+    loadedshop.forEach((element) {
+      print("element is ");
+      print(element);
+      if (element.name == search) searchitems.add(element);
+      print("it is added");
+    });
+    notifyListeners();
     print("serachfromitems last");
-    return false;
   }
 
   late String temp;
   Future<void> searchShop(String search) async {
     try {
       final response = await http.get(
-        Uri.parse('http://9c4395f19f3d.ngrok.io/get_restaurant_byname/$search'),
+        Uri.parse('http://bd72ae609002.ngrok.io/get_restaurant_byname/$search'),
       );
       final res = json.decode(response.body);
       final List<GetRestuarant> loadedshop = [];
@@ -141,21 +145,6 @@ class P_Restuarant with ChangeNotifier {
         searchitem.add(element);
         print("it is added");
       });
-      // int i = 0;
-      // loadedshop.forEach((element) {
-      //   print("element is ");
-      //   print(element);
-      //   final tempp = findshopbyid()
-      //       .firstWhere((f) => f.id == element.id, orElse: () => null);
-      //   if (tempp == null) {
-      //     findshopbyid(st_id).add(element);
-      //     i++;
-      //     print("it is added");
-      //   }
-      // });
-      // if (i == 0) {
-      //   searchShop(search, flag);
-      // }
       notifyListeners();
     } catch (error) {
       throw (error);

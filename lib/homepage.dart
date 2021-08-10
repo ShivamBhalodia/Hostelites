@@ -99,7 +99,6 @@ class _HomePageState extends State<HomePage> {
       search = searchstring;
       isSearch = true;
     });
-    Provider.of<P_Restuarant>(context, listen: false).searchfromitems(search);
     Provider.of<P_Restuarant>(context, listen: false)
         .searchShop(search)
         .then((value) {
