@@ -39,4 +39,34 @@ class P_Shopkeeper with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<void> loginshopkeeper(
+    String phone,
+    String password,
+    bool isUser,
+  ) async {
+    final url = 'https://953fa7d8445a.ngrok.io/login';
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(
+          {
+            'shopkeeper': isUser,
+            'phone': phone,
+            'password': password,
+          },
+        ),
+      );
+      final res = json.decode(response.body);
+      print("jainam in p_consumer");
+      print(res);
+      if (res['status'] != true) {
+        throw HttpException(res['detail']);
+      }
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+  }
 }

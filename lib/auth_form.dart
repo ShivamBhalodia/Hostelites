@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hostel_app/homepage.dart';
+import 'package:hostel_app/models/loginConsumer.dart';
 import 'package:hostel_app/providers/p_Shopkeeper.dart';
 import 'package:hostel_app/providers/p_consumer.dart';
 import 'package:hostel_app/settings.dart';
@@ -62,6 +63,47 @@ class _AuthFormState extends State<AuthForm> {
             password,
             confirmpassword,
             name,
+            true,
+          );
+        }
+        Navigator.of(context).pushNamed(HomePage.routename);
+      }
+    }
+
+    void _LoginSubmitShop() async {
+      final isValid = _formKey.currentState!.validate();
+      FocusScope.of(context).unfocus();
+      print(phone);
+      print(confirmpassword);
+      print("jainam checking");
+      if (isValid) {
+        bool isValid = _formKey.currentState!.validate();
+        _formKey.currentState!.save();
+        if (isValid) {
+          await Provider.of<P_Consumer>(context, listen: false).loginconsumer(
+            phone,
+            password,
+            true,
+          );
+        }
+        Navigator.of(context).pushNamed(HomePage.routename);
+      }
+    }
+
+    void _LoginSubmitConsumer() async {
+      final isValid = _formKey.currentState!.validate();
+      FocusScope.of(context).unfocus();
+      print(phone);
+      print(confirmpassword);
+      print("jainam checking");
+      if (isValid) {
+        bool isValid = _formKey.currentState!.validate();
+        _formKey.currentState!.save();
+        if (isValid) {
+          await Provider.of<P_Shopkeeper>(context, listen: false)
+              .loginshopkeeper(
+            phone,
+            password,
             true,
           );
         }
@@ -307,13 +349,15 @@ class _AuthFormState extends State<AuthForm> {
                                       RaisedButton(
                                     color: Colors.orange,
                                     child: Text(
-                                      'REGISTER',
+                                      'LOGIN',
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: Colors.white,
                                       ),
                                     ),
-                                    onPressed: _trySubmit,
+                                    onPressed: widget.flag == 1
+                                        ? _LoginSubmitShop
+                                        : _LoginSubmitConsumer,
                                   ),
                                 ),
                                 //if (!widget.isLoading && !_isLogin)
@@ -355,7 +399,7 @@ class _AuthFormState extends State<AuthForm> {
                                         top: 20,
                                       ),
                                       child: Text(
-                                        "Use Mobile Number",
+                                        "Use Number",
                                         style: TextStyle(
                                           color: Colors.orange,
                                           fontSize: 18,
@@ -369,39 +413,6 @@ class _AuthFormState extends State<AuthForm> {
                         ],
                       ),
                     ),
-                    _isLogin
-                        ? Center(
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              width: 500,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  top: BorderSide(
-                                    color: Colors.grey,
-                                    width: 1,
-                                  ),
-                                ),
-                                //borderRadius: BorderRadius.circular(60),
-                              ),
-                              child:
-                                  // widget.isLoading
-                                  //     ? Center(child: CircularProgressIndicator())
-                                  //     :
-                                  RaisedButton(
-                                color: Colors.orange,
-                                child: Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                onPressed: _trySubmit,
-                              ),
-                            ),
-                          )
-                        : Container()
                   ],
                 )
               : Container(
