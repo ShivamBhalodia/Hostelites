@@ -11,7 +11,7 @@ Mobile App to connect Hostelites and Home Restaurants.
 
 # User Flow and Functionality
 
-• There are two separate register and login options for consumers and shopkeepers.<br>
+• There are two separate registration and login options for consumers and shopkeepers.<br>
 • After login users can see all the registered restaurants with their categories and also they will have an option to sort Home restaurants according to a particular category and also can search the Home restaurants from the search bar.<br>
 • After tapping on a particular Home restaurant they will see all the available dishes and items for that Home restaurant and here also they will have an option to sort items according to a particular category and also can search the items from the search bar.<br>
 • Now Users can add items to the cart and can place the order, the order will first go to the pending orders, and the Home restaurant can accept the order or decline the order and according to that it will go to order history or be deleted.<br>
