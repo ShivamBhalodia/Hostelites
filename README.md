@@ -18,7 +18,7 @@ Mobile App to connect Hostelites and Home Restaurants.
 • Also, integrate google Maps API using which users can find nearby Home restaurants and also can get the directions to that restaurants. <br>
 • Home Restaurants can add daily menu or items.
 
-# Problem Solved
+# Problems Solved
 
 • For the hostilities, homemade food means a lot and they always try to find this such small Home restaurants in which one person runs a restaurant at home or provides tiffin services, and via this app, hostilities can get homemade food and Home restaurants can get more regular customers.<br>
 • Traditional ways of calling every day to ask menu can be eliminated, This is a good advantage because it is not feasible for the hostilities and Home restaurants. <br>
